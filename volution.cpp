@@ -73,4 +73,92 @@ void draw_shape(shape_t * dna, cairo_t * cr, int i)
 int mutateDNA (DNA,mutationtype)
 {
 	//mutate input DNA randomly according to mutation type
+	    mutated_shape = RANDINT(NUM_SHAPES);
+    double roulette = RANDDOUBLE(2.8);
+    double drastic = RANDDOUBLE(2);
+     
+    // mutate color
+    if(roulette<1)
+    {
+        if(dna_test[mutated_shape].a < 0.01 // completely transparent shapes are stupid
+                || roulette<0.25)
+        {
+            if(drastic < 1)
+            {
+                dna_test[mutated_shape].a += RANDDOUBLE(0.1);
+                dna_test[mutated_shape].a = CLAMP(dna_test[mutated_shape].a, 0.0, 1.0);
+            }
+            else
+                dna_test[mutated_shape].a = RANDDOUBLE(1.0);
+        }
+        else if(roulette<0.50)
+        {
+            if(drastic < 1)
+            {
+                dna_test[mutated_shape].r += RANDDOUBLE(0.1);
+                dna_test[mutated_shape].r = CLAMP(dna_test[mutated_shape].r, 0.0, 1.0);
+            }
+            else
+                dna_test[mutated_shape].r = RANDDOUBLE(1.0);
+        }
+        else if(roulette<0.75)
+        {
+            if(drastic < 1)
+            {
+                dna_test[mutated_shape].g += RANDDOUBLE(0.1);
+                dna_test[mutated_shape].g = CLAMP(dna_test[mutated_shape].g, 0.0, 1.0);
+            }
+            else
+                dna_test[mutated_shape].g = RANDDOUBLE(1.0);
+        }
+        else
+        {
+            if(drastic < 1)
+            {
+                dna_test[mutated_shape].b += RANDDOUBLE(0.1);
+                dna_test[mutated_shape].b = CLAMP(dna_test[mutated_shape].b, 0.0, 1.0);
+            }
+            else
+                dna_test[mutated_shape].b = RANDDOUBLE(1.0);
+        }
+    }
+    
+    // mutate shape
+    else if(roulette < 2.0)
+    {
+        int point_i = RANDINT(NUM_POINTS);
+        if(roulette<1.5)
+        {
+            if(drastic < 1)
+            {
+                dna_test[mutated_shape].points[point_i].x += (int)RANDDOUBLE(WIDTH/10.0);
+                dna_test[mutated_shape].points[point_i].x = CLAMP(dna_test[mutated_shape].points[point_i].x, 0, WIDTH-1);
+            }
+            else
+                dna_test[mutated_shape].points[point_i].x = RANDDOUBLE(WIDTH);
+        }
+        else
+        {
+            if(drastic < 1)
+            {
+                dna_test[mutated_shape].points[point_i].y += (int)RANDDOUBLE(HEIGHT/10.0);
+                dna_test[mutated_shape].points[point_i].y = CLAMP(dna_test[mutated_shape].points[point_i].y, 0, HEIGHT-1);
+            }
+            else
+                dna_test[mutated_shape].points[point_i].y = RANDDOUBLE(HEIGHT);
+        }
+    }
+
+    // mutate stacking
+    else
+    {
+        int destination = RANDINT(NUM_SHAPES);
+        shape_t s = dna_test[mutated_shape];
+        dna_test[mutated_shape] = dna_test[destination];
+        dna_test[destination] = s;
+        return destination;
+    }
+    return -1;
+
+}
 }
