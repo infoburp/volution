@@ -4,7 +4,11 @@ using namespace std;
 int main ()
 {
 	//initialise variables
-	string DNA;
+	class DNA 
+	{
+		public:
+		string genome;
+	}
 }
 
 int computefitness (DNA, originalimage)
