@@ -1,5 +1,16 @@
 opencl evolved images, features that'd be nice:
 
-any features at all (decided on c++ implementation)
-screensaver mode
-gif to multiple evolved images
+Features:
+-any features at all
+-screensaver mode
+-(gif to multiple evolved images)
+
+Algorithmstuff:
+-split bigger images in smaller (e.g. 100x100px) subimages and evolve them in forked processes/threads.
+(Is this the right way to do this? Why not try lots of times in parallel with random differences? This would avoid gaps between subimages)
+-refine color palette (but allow deviations with some kind of acceptance)
+
+Implementation:
+-C++
+-UI maybe in C# or with QT
+-platform agnostic would be nice
