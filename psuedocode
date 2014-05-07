@@ -9,3 +9,9 @@ for each thread {
 4) If the new painting looks more like the source image than the previous painting did, then overwrite the current DNA with the new DNA
 5) repeat from 1
 }
+
+functions:
+
+-compute fitness (DNA, original image)
+-render DNA to image
+-mutate DNA(DNA,mutation type)
