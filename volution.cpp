@@ -46,9 +46,28 @@ int computefitness (DNA, originalimage)
 	return (y);
 }
 
-int renderDNA (DNA)
+int renderDNA (shape_t * DNA, cairo_t * cr)
 {
 	//render input DNA to an image
+    cairo_set_source_rgb(cr, 1, 1, 1);
+    cairo_rectangle(cr, 0, 0, WIDTH, HEIGHT);
+    cairo_fill(cr);
+    for(int i = 0; i < NUM_SHAPES; i++)
+        draw_shape(dna, cr, i);
+}
+
+void draw_shape(shape_t * dna, cairo_t * cr, int i)
+{
+	//draw an individual shape within a DNA strand
+    cairo_set_line_width(cr, 0);
+    shape_t * shape = &dna[i];
+    cairo_set_source_rgba(cr, shape->r, shape->g, shape->b, shape->a);
+    cairo_move_to(cr, shape->points[0].x, shape->points[0].y);
+    for(int j = 1; j < NUM_POINTS; j++)
+        cairo_line_to(cr, shape->points[j].x, shape->points[j].y);
+    cairo_fill(cr);
+}
+
 }
 
 int mutateDNA (DNA,mutationtype)
