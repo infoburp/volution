@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdio.h>
 using namespace std;
 
 int main ()
@@ -165,7 +166,32 @@ int mutateDNA (DNA,mutationtype)
 
 int saveDNA(DNA)
 {
-    //save DNA to disk as a .dna file
+	int result;
+
+	while(1)
+	{
+		// start by writing a temp file.
+
+		pFile = fopen ("volution.dna.temp","w");
+		fprintf (pFile, DNA);
+		fclose (pFile);
+
+		// Then rename the real backup to a secondary backup.
+    
+		result = rename("volution.dna","volution_2.dna");
+    
+		// Then rename the temp file to the primary backup
+
+		result = rename("volution.dna.temp","volution.dna");
+    
+		// Then delete the temp file
+    
+		result = remove("volution.dna.temp");
+
+		//sleep for 30 seconds.
+		
+		sleep(30000);
+	}
 }
 
 int saveSVG(DNA)
