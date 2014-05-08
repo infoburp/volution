@@ -162,3 +162,17 @@ int mutateDNA (DNA,mutationtype)
 
 }
 }
+
+int saveDNA(DNA)
+{
+    //save DNA to disk as a .dna file
+}
+
+int saveSVG(DNA)
+{
+    //render DNA and save resulting image to disk as .svg file
+
+    //render image from DNA
+    renderDNA(DNA);
+    //save resultant image to disk as svg
+}
