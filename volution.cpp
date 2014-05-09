@@ -1,10 +1,32 @@
 #include <iostream>
 #include <CL/cl.hpp>
+#include <string>
+#include <vector>
+
 using namespace std;
 
-int main ()
+int main (int argc, char* argv[])
 {
-	//initialise variables
+    //read input commandline arguments
+    for (int i = 1; i < argc; ++i) 
+    {
+        if (std::string(argv[i]) == "-a") 
+            {
+                //initialise desired accuracy variable according to commandline argument -a
+            }
+        if (std::string(argv[i]) == "-p") 
+            {
+                //initialise maximum polygons variable according to commandline argument -p
+            }
+        if (std::string(argv[i]) == "-v") 
+            {
+                //initialise maximum verices per polygon variable according to commandline argument -v
+            }
+    }
+    //read specified input image file
+
+    
+    //initialise variables
 	class DNA 
 	{
 		public:
