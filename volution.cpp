@@ -64,6 +64,13 @@ int main (int argc, char* argv[])
     cl::Context context({default_device});
  
     cl::Program::Sources sources;
+
+    //run render loop until desired accuracy is reached
+    while (leaderaccuracy<accuracy) 
+        {
+        }
+    //perform final render, output svg and raster image
+    saverender(leaderDNA);
 }
 
 int computefitness (DNA, originalimage)
@@ -83,7 +90,7 @@ int computefitness (DNA, originalimage)
     //compare leader and input dna rendered bounding boxes
 
     //return 1 if input dna is fitter than leader dna, else return 0
-     
+
 	renderDNA(DNA);
 
 	char *img1data, *img2data, fname[15];
@@ -118,12 +125,15 @@ int computefitness (DNA, originalimage)
 
 int renderDNA (shape_t * DNA, cairo_t * cr)
 {
-	//render input DNA to an image
+	//render input DNA to a raster image and svg
+
+    //render to raster image
     cairo_set_source_rgb(cr, 1, 1, 1);
     cairo_rectangle(cr, 0, 0, WIDTH, HEIGHT);
     cairo_fill(cr);
     for(int i = 0; i < NUM_SHAPES; i++)
         draw_shape(dna, cr, i);
+    //render to svg
 }
 
 void draw_shape(shape_t * dna, cairo_t * cr, int i)
@@ -263,11 +273,11 @@ int saveDNA(DNA)
 	}
 }
 
-int saveSVG(DNA)
+int saverender(DNA)
 {
-    //render DNA and save resulting image to disk as .svg file
+    //render DNA and save resulting image to disk as .svg file and raster image (.png)
 
     //render image from DNA
     renderDNA(DNA);
-    //save resultant image to disk as svg
+    //save resultant image to disk as svg and png files
 }
