@@ -80,47 +80,49 @@ int computefitness (DNA, originalimage)
     //read leader dna
 
     //compare input dna to leader dna to find changed polygons
-
+    compareDNA(leaderDNA,DNA);
     //create bounding box containing changed polygons
 
     //render leader dna within bounding box
-
+    leaderrender = renderDNA(leaderDNA,boundx,boundy);
     //render input dna within bounding box
-
+    inputrender = renderDNA(DNA,boundx,boundy);
     //compare leader and input dna rendered bounding boxes
+    compareimage(leaderrender,inputrender);
+    //returns 1 if input dna is fitter than leader dna, else returns 0
+}
 
-    //return 1 if input dna is fitter than leader dna, else return 0
+int compareimage(image0,image1)
+{
+    //compare two raster images, return 1 if image1 fitter than image0, else return 0
+    char *img1data, *img2data, fname[15];
+    int s, n = 0, y = 0;
 
-	renderDNA(DNA);
+    sprintf(fname, "photo%d.bmp", p - 1);
+    cout << "\n" << fname;
+    ifstream img1(fname, ios::in|ios::binary|ios::ate);
+    sprintf(fname, "photo%d.bmp", p);
+    cout << "\n" << fname;
+    ifstream img2(fname, ios::in|ios::binary|ios::ate);
 
-	char *img1data, *img2data, fname[15];
-	int s, n = 0, y = 0;
-
-	sprintf(fname, "photo%d.bmp", p - 1);
-	cout << "\n" << fname;
-	ifstream img1(fname, ios::in|ios::binary|ios::ate);
-	sprintf(fname, "photo%d.bmp", p);
-	cout << "\n" << fname;
-	ifstream img2(fname, ios::in|ios::binary|ios::ate);
-
-	if (img1.is_open() && img2.is_open())
+    if (img1.is_open() && img2.is_open())
     {
-		s = (int)img1.tellg();
-		img1data = new char [s];
-		img1.seekg (0, ios::beg);
-		img1.read (img1data, s);
-		img1.close();
+        s = (int)img1.tellg();
+        img1data = new char [s];
+        img1.seekg (0, ios::beg);
+        img1.read (img1data, s);
+        img1.close();
 
-		img2data = new char [s];
-		img2.seekg (0, ios::beg);
-		img2.read (img2data, s);
-		img2.close();
-	}
-	
-	for(int i=0; i<s; i++)
+        img2data = new char [s];
+        img2.seekg (0, ios::beg);
+        img2.read (img2data, s);
+        img2.close();
+    }
+    
+    for(int i=0; i<s; i++)
         if (img1data[i]==img2data[i]) y++;
 
-	return (y);
+    return (y);
 }
 
 int renderDNA (shape_t * DNA, cairo_t * cr)
