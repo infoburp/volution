@@ -38,7 +38,21 @@ int main (int argc, char* argv[])
 	{
 		public:
 		string genome;
+        int polygons;
+        int vertices;
+        polygon[polygons];
+
 	}
+    class polygon;
+    {
+        public:
+        int x[vertices];
+        int y[vertices];
+        int R;
+        int G;
+        int B;
+        int alpha;
+    }
     //initialise opencl device
     //get all platforms (drivers)
     std::vector<cl::Platform> all_platforms;
@@ -72,7 +86,10 @@ int main (int argc, char* argv[])
     //perform final render, output svg and raster image
     saverender(leaderDNA);
 }
-
+int computefitnesspercent (DNA, originalimage)
+{
+    //compute what % match DNA is to original image
+}
 int computefitness (DNA, originalimage)
 {
 	//compute the fitness of input DNA, i.e. how close is it to original image?
