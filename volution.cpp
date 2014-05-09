@@ -108,7 +108,10 @@ int computefitness (DNA, originalimage)
     compareimage(leaderrender,inputrender);
     //returns 1 if input dna is fitter than leader dna, else returns 0
 }
-
+int compareDNA(DNA0,DNA1)
+{
+    //compare DNA0 to DNA1 to find changed polygons
+}
 int compareimage(image0,image1)
 {
     //compare two raster images, return 1 if image1 fitter than image0, else return 0
