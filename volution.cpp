@@ -79,9 +79,19 @@ int main (int argc, char* argv[])
  
     cl::Program::Sources sources;
 
+    //initialise DNA with a random seed
+    leaderDNA = seedDNA();
     //run render loop until desired accuracy is reached
     while (leaderaccuracy<accuracy) 
         {
+            //mutate from the leaderDNA
+            mutatedDNA = mutateDNA(leaderDNA)
+            //compute fitness of mutation vs leaderDNA
+            //check if it is fitter, if so overwrite leaderDNA
+            if (computefitness() == 1)
+            {
+                //overwrite leaderDNA
+            }
         }
     //perform final render, output svg and raster image
     saverender(leaderDNA);
@@ -107,6 +117,10 @@ int computefitness (DNA, originalimage)
     //compare leader and input dna rendered bounding boxes
     compareimage(leaderrender,inputrender);
     //returns 1 if input dna is fitter than leader dna, else returns 0
+}
+int seedDNA()
+{
+    //create a random seed dna
 }
 int compareDNA(DNA0,DNA1)
 {
