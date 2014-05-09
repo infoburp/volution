@@ -88,9 +88,10 @@ int main (int argc, char* argv[])
             mutatedDNA = mutateDNA(leaderDNA)
             //compute fitness of mutation vs leaderDNA
             //check if it is fitter, if so overwrite leaderDNA
-            if (computefitness() == 1)
+            if (computefitness(leaderDNA,mutatedDNA) == 1)
             {
                 //overwrite leaderDNA
+                leaderDNA = mutatedDNA;
             }
         }
     //perform final render, output svg and raster image
@@ -100,7 +101,7 @@ int computefitnesspercent (DNA, originalimage)
 {
     //compute what % match DNA is to original image
 }
-int computefitness (DNA, originalimage)
+int computefitness (DNA0, DNA1)
 {
 	//compute the fitness of input DNA, i.e. how close is it to original image?
 
@@ -116,7 +117,7 @@ int computefitness (DNA, originalimage)
     inputrender = renderDNA(DNA,boundx,boundy);
     //compare leader and input dna rendered bounding boxes
     compareimage(leaderrender,inputrender);
-    //returns 1 if input dna is fitter than leader dna, else returns 0
+    //returns 1 if dna1 is fitter than dna0, else returns 0
 }
 int seedDNA()
 {
