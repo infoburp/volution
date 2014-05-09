@@ -17,16 +17,19 @@ int main (int argc, char* argv[])
         if (std::string(argv[i]) == "-a") 
             {
                 //initialise desired accuracy variable according to commandline argument -a
+                accuracy = ;
                 
             }
         if (std::string(argv[i]) == "-p") 
             {
                 //initialise maximum polygons variable according to commandline argument -p
+                polygons = ;
                
             }
         if (std::string(argv[i]) == "-v") 
             {
                 //initialise maximum verices per polygon variable according to commandline argument -v
+                vertices = ;
                
             }
     }
@@ -34,6 +37,7 @@ int main (int argc, char* argv[])
 
     //read specified input image file
 
+    importimage(argv[]);
     
     //initialise variables
 	class DNA 
@@ -319,4 +323,9 @@ int saverender(DNA)
     //render image from DNA
     renderDNA(DNA);
     //save resultant image to disk as svg and png files
+}
+
+int importimage(image)
+{
+    //import specified image
 }
