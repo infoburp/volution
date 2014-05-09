@@ -193,9 +193,9 @@ void draw_shape(shape_t * dna, cairo_t * cr, int i)
 
 }
 
-int mutateDNA (DNA,mutationtype)
+int mutateDNA (DNA)
 {
-	//mutate input DNA randomly according to mutation type
+	//mutate input DNA randomly
 	    mutated_shape = RANDINT(NUM_SHAPES);
     double roulette = RANDDOUBLE(2.8);
     double drastic = RANDDOUBLE(2);
