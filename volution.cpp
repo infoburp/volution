@@ -69,6 +69,21 @@ int main (int argc, char* argv[])
 int computefitness (DNA, originalimage)
 {
 	//compute the fitness of input DNA, i.e. how close is it to original image?
+
+    //read leader dna
+
+    //compare input dna to leader dna to find changed polygons
+
+    //create bounding box containing changed polygons
+
+    //render leader dna within bounding box
+
+    //render input dna within bounding box
+
+    //compare leader and input dna rendered bounding boxes
+
+    //return 1 if input dna is fitter than leader dna, else return 0
+     
 	renderDNA(DNA);
 
 	char *img1data, *img2data, fname[15];
