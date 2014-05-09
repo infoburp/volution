@@ -1,7 +1,8 @@
 #include <iostream>
-#include <CL/cl.hpp>
 #include <string>
 #include <vector>
+#include <stdexcept>
+#include <vexcl/vexcl.hpp>
 
 using namespace std;
 
@@ -33,8 +34,13 @@ int main (int argc, char* argv[])
                
             }
     }
+    //use vexcl to initialise compute devices (gpu, cpu, apu)
+    vex::Context ctx( vex::Filter::Type(CL_DEVICE_TYPE_GPU) && vex::Filter::DoublePrecision );
 
+    if (!ctx) throw std::runtime_error("No devices available.");
 
+    // Print out list of selected devices:
+    std::cout << ctx << std::endl;
     //read specified input image file into the gpu memory
 
     importimage(argv[]);
@@ -59,31 +65,6 @@ int main (int argc, char* argv[])
         int B;
         int alpha;
     }
-    //initialise opencl device
-    //get all platforms (drivers)
-    std::vector<cl::Platform> all_platforms;
-    cl::Platform::get(&all_platforms);
-    if(all_platforms.size()==0){
-        std::cout<<" No platforms found. Check OpenCL installation!\n";
-        exit(1);
-    }
-    cl::Platform default_platform=all_platforms[0];
-    std::cout << "Using platform: "<<default_platform.getInfo<CL_PLATFORM_NAME>()<<"\n";
- 
-    //get default device of the default platform
-    std::vector<cl::Device> all_devices;
-    default_platform.getDevices(CL_DEVICE_TYPE_ALL, &all_devices);
-    if(all_devices.size()==0){
-        std::cout<<" No devices found. Check OpenCL installation!\n";
-        exit(1);
-    }
-    cl::Device default_device=all_devices[0];
-    std::cout<< "Using device: "<<default_device.getInfo<CL_DEVICE_NAME>()<<"\n";
- 
- 
-    cl::Context context({default_device});
- 
-    cl::Program::Sources sources;
 
     //initialise DNA with a random seed
     leaderDNA = seedDNA();
@@ -99,6 +80,8 @@ int main (int argc, char* argv[])
                 //overwrite leaderDNA
                 leaderDNA = mutatedDNA;
             }
+            //compute accuracy percent
+            computefitnesspercent(leaderDNA, originalimage)
         }
     //perform final render, output svg and raster image
     saverender(leaderDNA);
