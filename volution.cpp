@@ -310,9 +310,6 @@ int saveDNA(DNA)
     
 		result = remove("volution.dna.temp");
 
-		//sleep for 30 seconds.
-		
-		sleep(30000);
 	}
 }
 
@@ -328,6 +325,16 @@ int saverender(DNA)
 int importimage(image)
 {
     //import specified image into the gpu memory
+    // Load input image from file and load it into
+    // an OpenCL image object
+    int width, height;
+    imageObjects[0] = LoadImage(context, argv[1], width, height);
+    if (imageObjects[0] == 0)
+    {
+        std::cerr << "Error loading: " << std::string(argv[1]) << std::endl;
+        Cleanup(context, commandQueue, program, kernel, imageObjects, sampler);
+        return 1;
+    }
 }
 
 int drawshape()
