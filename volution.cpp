@@ -166,11 +166,15 @@ int compareimage(image0,image1)
     return (y);
 }
 
-int renderDNA (shape_t * DNA, cairo_t * cr)
+int renderDNA (DNA, boundx0, boundy0, boundx1, boundy1)
 {
 	//render input DNA to a raster image and svg
 
     //render to raster image
+
+    //read DNA from gpu memory
+
+    //initialise a new opengl image and render the dna within bounding box into it
     cairo_set_source_rgb(cr, 1, 1, 1);
     cairo_rectangle(cr, 0, 0, WIDTH, HEIGHT);
     cairo_fill(cr);
@@ -181,7 +185,7 @@ int renderDNA (shape_t * DNA, cairo_t * cr)
 
 void draw_shape(shape_t * dna, cairo_t * cr, int i)
 {
-	//draw an individual shape within a DNA strand
+	//render an individual shape within a DNA strand using opengl
     cairo_set_line_width(cr, 0);
     shape_t * shape = &dna[i];
     cairo_set_source_rgba(cr, shape->r, shape->g, shape->b, shape->a);
