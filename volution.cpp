@@ -13,16 +13,23 @@ int main (int argc, char* argv[])
         if (std::string(argv[i]) == "-a") 
             {
                 //initialise desired accuracy variable according to commandline argument -a
+                //or if no argument is given, set default value
+                int accuracy = 90;
             }
         if (std::string(argv[i]) == "-p") 
             {
                 //initialise maximum polygons variable according to commandline argument -p
+                //or if no argument is given, set default value
+                int polygons = 50;
             }
         if (std::string(argv[i]) == "-v") 
             {
                 //initialise maximum verices per polygon variable according to commandline argument -v
+                //or if no argument is given, set default value
+                int vertices = 6;
             }
     }
+
     //read specified input image file
 
     
