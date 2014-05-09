@@ -35,7 +35,7 @@ int main (int argc, char* argv[])
     }
 
 
-    //read specified input image file
+    //read specified input image file into the gpu memory
 
     importimage(argv[]);
     
@@ -327,5 +327,28 @@ int saverender(DNA)
 
 int importimage(image)
 {
-    //import specified image
+    //import specified image into the gpu memory
+}
+
+int drawshape()
+{
+	//user draws shape from ui
+
+    //start drawing shape vertex by vertex
+    //until max number of vertices reached or user closes polygon by clicking on initial vertex
+
+    //check if drawn shape gives a better fitness
+
+    //if it does update the leaderDNA
+}
+
+int dragvertex()
+{
+	//user drags vertex from ui
+
+    //user stops dragging vertex
+
+    //check if dragged vertex improves fitness
+
+    //if it does update the leaderDNA
 }
