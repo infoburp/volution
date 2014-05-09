@@ -1,7 +1,15 @@
 #include <vector>
-#include <algorithm>
 #include <boost/compute.hpp>
-
+#include <iostream>
+#include <algorithm>
+#include <QtGui>
+#include <QtOpenGL>
+#include <boost/compute/command_queue.hpp>
+#include <boost/compute/kernel.hpp>
+#include <boost/compute/program.hpp>
+#include <boost/compute/source.hpp>
+#include <boost/compute/system.hpp>
+#include <boost/compute/interop/opengl.hpp>
 namespace compute = boost::compute;
 
 int main()
@@ -13,7 +21,8 @@ int main()
     compute::context ctx(gpu);
     compute::command_queue queue(ctx, gpu);
 
-    // generate random numbers on the host
+    //create random leader dna
+    // generate random dna vector on the host
     std::vector<float> host_vector(1000000);
     std::generate(host_vector.begin(), host_vector.end(), rand);
 
@@ -21,17 +30,17 @@ int main()
     compute::vector<float> device_vector(1000000, ctx);
 
     //initialise variables
-const size_t n = 1024 * 1024;
-vex::Context ctx( vex::Filter::Any );
-vex::vector<double> leaderDNA(ctx, n);
-vex::vector<double> mutatedDNA(ctx, n);
-vex::vector<double> leaderDNArender(ctx, n);
-vex::vector<double> mutatedDNArender(ctx, n);
-vex::vector<double> originalimage(ctx, n);
+    const size_t n = 1024 * 1024;
+    vex::Context ctx( vex::Filter::Any );
+    vex::vector<double> leaderDNA(ctx, n);
+    vex::vector<double> mutatedDNA(ctx, n);
+    vex::vector<double> leaderDNArender(ctx, n);
+    vex::vector<double> mutatedDNArender(ctx, n);
+    vex::vector<double> originalimage(ctx, n);
 
 
-//load image into gpu memory
-   // copy data to the device
+    //load image into gpu memory
+    // copy data to the device
     compute::copy(
         host_vector.begin(),
         host_vector.end(),
@@ -39,53 +48,65 @@ vex::vector<double> originalimage(ctx, n);
         queue
     );
 
-//create random leader dna
+    
 
-//render dna
-VEX_FUNCTION(double, renderDNA, (double, x)(double, y),
-    return x * x + y * y;
-    );
+    //render dna
 
-//render leader dna
-leaderDNArender = renderDNA(squared_radius(X, Y));
+    //for each shape in dna
+    {
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, gl_texture_);
 
-//mutate leader dna
-VEX_FUNCTION(double, renderDNA, (double, x)(double, y),
-    return x * x + y * y;
-    );
-
-//render mutated dna
-mutatedDNArender = renderDNA(squared_radius(X, Y));
-
-//compare mutated dna to leader dna
-VEX_FUNCTION(double, renderDNA, (double, x)(double, y),
-    return x * x + y * y;
-    //return % match
-    );
-
-
- 
-
-    // sort data on the device
-    compute::sort(
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0); glVertex2f(0, 0);
+    glTexCoord2f(0, 1); glVertex2f(0, h);
+    glTexCoord2f(1, 1); glVertex2f(w, h);
+    glTexCoord2f(1, 0); glVertex2f(w, 0);
+    glEnd();
+    }
+    //render leader dna
+    compute::renderDNA(
         device_vector.begin(),
         device_vector.end(),
         queue
     );
 
-//if more fit, overwrite leader dna
+    //mutate leader dna
+    compute::mutateDNA(
+        device_vector.begin(),
+        device_vector.end(),
+        queue
+    );
 
-if (renderDNA(mutatedDNA) > leaderDNAscore) 
-{
+    //render mutated dna
+    compute::renderDNA(
+        device_vector.begin(),
+        device_vector.end(),
+        queue
+    );
+
+    //compare mutated dna to leader dna
+    compute::compareDNA(
+        device_vector.begin(),
+        device_vector.end(),
+        queue
+    );
+
+    //if more fit, overwrite leader dna
+
+    if (renderDNA(mutatedDNA) > leaderDNAscore) 
+    {
     leaderDNA = mutatedDNA;
-}
-    // copy data back to the host
+     // copy data back to the host
     compute::copy(
         device_vector.begin(),
         device_vector.end(),
         host_vector.begin(),
         queue
     );
+    }
+   
 
     return 0;
+
 }
