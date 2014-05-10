@@ -168,13 +168,25 @@ int renderDNA (DNA, boundx0, boundy0, boundx1, boundy1)
 
 void draw_shape(shape_t * dna, cairo_t * cr, int i)
 {
+	// Set variables that define the boundary of the bounding box in 
+	// computefitness and renderDNA
+	int xmax = 0, xmin = 0, ymax = 0, ymin = 0;
+	
 	//render an individual shape within a DNA strand using opengl
     cairo_set_line_width(cr, 0);
     shape_t * shape = &dna[i];
     cairo_set_source_rgba(cr, shape->r, shape->g, shape->b, shape->a);
     cairo_move_to(cr, shape->points[0].x, shape->points[0].y);
     for(int j = 1; j < NUM_POINTS; j++)
+		// Check the X and Y values of the boundary box & the polygon 
+		// Expand the bounding box edges if necessary
+		xmax = (shape->points[j].x > xmax) ? shape->points[j].x : xmax ;
+		xmin = (shape->points[j].x < xmin) ? shape->points[j].x : xmin ;
+		ymax = (shape->points[j].y > ymax) ? shape->points[j].y : ymax ;
+		ymin = (shape->points[j].y < ymin) ? shape->points[j].y : ymin ;
+		
         cairo_line_to(cr, shape->points[j].x, shape->points[j].y);
+        
     cairo_fill(cr);
 }
 
