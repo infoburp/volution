@@ -3,6 +3,12 @@ volution
 
 opencl image evolver
 
+volution inputfile outputfile -a 90 -p 50 -v 6
+ 
+-a - accuracy in % - how close a match until processing ends? (default 90%)
+-p - polygons - max number of polygons in output image (default 50)
+-v - vertices - max number of vertices per polygon (default 6)
+
 Thread about what this is:
 
 http://archive.rebeccablacktech.com/g/thread/S41780018
