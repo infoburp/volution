@@ -216,92 +216,14 @@ int main (int argc, char* argv[])
                         { 
                         //mutate input DNA randomly
                         mutated_shape = RANDINT(NUM_SHAPES);
-                        double roulette = RANDDOUBLE(2.8);
-                        double drastic = RANDDOUBLE(2);
+                        double roulette = RANDDOUBLE(3);
      
                         // mutate color
-                        if(roulette<1)
-                        {
-                            if(dna_test[mutated_shape].a < 0.01 // completely transparent shapes are stupid
-                            || roulette<0.25)
-                        {
-                        if(drastic < 1)
-                        {
-                            dna_test[mutated_shape].a += RANDDOUBLE(0.1);
-                        dna_test[mutated_shape].a = CLAMP(dna_test[mutated_shape].a, 0.0, 1.0);
-                        }
-                        else
-                            dna_test[mutated_shape].a = RANDDOUBLE(1.0);
-                        }
-                        else if(roulette<0.50)
-                        {
-                        if(drastic < 1)
-                        {
-                        dna_test[mutated_shape].r += RANDDOUBLE(0.1);
-                        dna_test[mutated_shape].r = CLAMP(dna_test[mutated_shape].r, 0.0, 1.0);
-                        }
-                        else
-                        dna_test[mutated_shape].r = RANDDOUBLE(1.0);
-                        }
-                        else if(roulette<0.75)
-                        {
-                            if(drastic < 1)
-                                {
-                                    dna_test[mutated_shape].g += RANDDOUBLE(0.1);
-                                    dna_test[mutated_shape].g = CLAMP(dna_test[mutated_shape].g, 0.0, 1.0);
-                                }
-                            else
-                                    dna_test[mutated_shape].g = RANDDOUBLE(1.0);
-                        }
-                        else
-                        {
-                        if(drastic < 1)
-                        {
-                            dna_test[mutated_shape].b += RANDDOUBLE(0.1);
-                            dna_test[mutated_shape].b = CLAMP(dna_test[mutated_shape].b, 0.0, 1.0);
-                        }
-                        else
-                            dna_test[mutated_shape].b = RANDDOUBLE(1.0);
-                        }
-                        }
-    
+                            //randomly change mutated_shape colour
                         // mutate shape
-                        else if(roulette < 2.0)
-                        {
-                        int point_i = RANDINT(NUM_POINTS);
-                        if(roulette<1.5)
-                        {
-                        if(drastic < 1)
-                        {
-                            dna_test[mutated_shape].points[point_i].x += (int)RANDDOUBLE(WIDTH/10.0);
-                            dna_test[mutated_shape].points[point_i].x = CLAMP(dna_test[mutated_shape].points[point_i].x, 0, WIDTH-1);
-                        }
-                        else
-                            dna_test[mutated_shape].points[point_i].x = RANDDOUBLE(WIDTH);
-                        }
-                        else
-                        {
-                        if(drastic < 1)
-                        {
-                            dna_test[mutated_shape].points[point_i].y += (int)RANDDOUBLE(HEIGHT/10.0);
-                            dna_test[mutated_shape].points[point_i].y = CLAMP(dna_test[mutated_shape].points[point_i].y, 0, HEIGHT-1);
-                        }
-                        else
-                            dna_test[mutated_shape].points[point_i].y = RANDDOUBLE(HEIGHT);
-                        }
-                        }
-
+                            //randomly move one vertex in mutated_shape
                         // mutate stacking
-                        else
-                        {
-                            int destination = RANDINT(NUM_SHAPES);
-                            shape_t s = dna_test[mutated_shape];
-                            dna_test[mutated_shape] = dna_test[destination];
-                            dna_test[destination] = s;
-                            return destination;
-                        }
-                        return -1;
-                        }"
+                            //randomly move one shape up or down stack in mutated_shape
                 );
 
     //render mutated DNA to a raster image in opengl texture
@@ -349,38 +271,29 @@ int main (int argc, char* argv[])
                     leaderDNA = mutatedDNA;
 
                     //save dna to disk
-                    // start by writing a temp file.
-                    pFile = fopen ("volution.dna.temp","w");
+                    pFile = fopen ("volution.dna","w");
                     fprintf (pFile, DNA);
                     fclose (pFile);
-
-                    // Then rename the real backup to a secondary backup.
-                    result = rename("volution.dna","volution_2.dna");
-    
-                    // Then rename the temp file to the primary backup
-                    result = rename("volution.dna.temp","volution.dna");
-    
-                    // Then delete the temp file
-                    result = remove("volution.dna.temp");
                 }
         }
     //perform final render, output svg and raster image
         //render DNA and save resulting image to disk as .svg file and raster image (.png)
 
-    //render image from DNA
-    renderDNA(DNA);
-    //save resultant image to disk as svg and png files
+        //render image from DNA
+        renderDNA(DNA);
 
-    //render input DNA to an svg file
-    boost::compute::function<int (int)> renderSVG =
-    boost::compute::make_function_from_source<int (int)>(
-        "renderSVG",
-        "int renderSVG(int x) { 
+        //save resultant image to disk as svg and png files
 
-            //for each shape in dna
-            {
-            //add shape to svg file
-            }
-        }"
-    );
+        //render input DNA to an svg file
+        boost::compute::function<int (int)> renderSVG =
+        boost::compute::make_function_from_source<int (int)>(
+            "renderSVG",
+            "int renderSVG(int x) { 
+
+                //for each shape in dna
+                {
+                    //add shape to svg file
+                }
+            }"
+        );
 }
