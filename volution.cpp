@@ -187,24 +187,12 @@ int main (int argc, char* argv[])
             );
 
 
-            //compute fitness of leader dna image
+    //compute fitness of leader dna image
     //compute what % match DNAimage is to original image
     boost::compute::function<int (int)> computefitnesspercent =
     boost::compute::make_function_from_source<int (int)>(
         "computefitnesspercent",
-        "int computefitnesspercent(int x) { //read leader dna
-
-    //compare input dna to leader dna to find changed polygons
-    compareDNA(leaderDNA,DNA);
-    //create bounding box containing changed polygons
-
-    //render leader dna within bounding box
-    leaderrender = renderDNA(leaderDNA,boundx,boundy);
-    //render input dna within bounding box
-    inputrender = renderDNA(DNA,boundx,boundy);
-    //compare leader and input dna rendered bounding boxes
-    compareimage(leaderrender,inputrender);
-    //returns % match }"
+        "int computefitnesspercent(int x) { }"
     );
             while ()
                 {
@@ -220,10 +208,31 @@ int main (int argc, char* argv[])
      
                         // mutate color
                             //randomly change mutated_shape colour
+                                //change red
+                                    //up
+                                    //down
+                                //change green
+                                    //up
+                                    //down
+                                //change blue
+                                    //up
+                                    //down
+                                //change alpha
+                                    //up
+                                    //down
                         // mutate shape
                             //randomly move one vertex in mutated_shape
+                                //randomly pick vertex
+                                    //move up
+                                    //move down
+                                    //move left
+                                    //move right
                         // mutate stacking
-                            //randomly move one shape up or down stack in mutated_shape
+                            //randomly move one shape up or down stack 
+                                //randomly select shape
+                                    //move shape up stack
+                                    //move shape down stack
+
                 );
 
     //render mutated DNA to a raster image in opengl texture
@@ -250,19 +259,7 @@ int main (int argc, char* argv[])
     boost::compute::function<int (int)> computefitnesspercent =
     boost::compute::make_function_from_source<int (int)>(
         "computefitnesspercent",
-        "int computefitnesspercent(int x) { //read leader dna
-
-    //compare input dna to leader dna to find changed polygons
-    compareDNA(leaderDNA,DNA);
-    //create bounding box containing changed polygons
-
-    //render leader dna within bounding box
-    leaderrender = renderDNA(leaderDNA,boundx,boundy);
-    //render input dna within bounding box
-    inputrender = renderDNA(DNA,boundx,boundy);
-    //compare leader and input dna rendered bounding boxes
-    compareimage(leaderrender,inputrender);
-    //returns % match }"
+        "int computefitnesspercent(int x) { }"
     );
                 //check if it is fitter, if so overwrite leaderDNA
                 while (fitness(mutatedDNA,originalimage) < leaderfitness))
