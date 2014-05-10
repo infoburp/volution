@@ -256,10 +256,8 @@ int mutateDNA (DNA)
     boost::compute::function<int (int)> mutateDNA =
     boost::compute::make_function_from_source<int (int)>(
         "mutateDNA",
-        "int mutateDNA(int x) { return x + 4; }"
-    );
-	//mutate input DNA randomly
-	    mutated_shape = RANDINT(NUM_SHAPES);
+        "int mutateDNA(int DNA) { //mutate input DNA randomly
+        mutated_shape = RANDINT(NUM_SHAPES);
     double roulette = RANDDOUBLE(2.8);
     double drastic = RANDDOUBLE(2);
      
@@ -345,9 +343,11 @@ int mutateDNA (DNA)
         return destination;
     }
     return -1;
+ }"
+    );
+	
+}
 
-}
-}
 
 int saveDNA(DNA)
 {
