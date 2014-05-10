@@ -1,7 +1,11 @@
 volution
 ========
 
-Need boost library to compile
+To compile you need : 
+
+- openCL (either amd or nvidia)
+- boost
+- vertx
 
 opencl image evolver
 
