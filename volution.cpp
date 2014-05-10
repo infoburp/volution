@@ -63,6 +63,11 @@ int main (int argc, char* argv[])
     std::vector<double> originalimage(ctx, n);
 
     //load image into gpu memory
+    if (std::string(argv[i]) == "") 
+            {
+                //load file according to commandline argument into gpu vector
+                std::vector<double> leaderDNA(ctx, n);
+            }
     // copy data to the device
     compute::copy(
         host_vector.begin(),
@@ -115,6 +120,23 @@ int main (int argc, char* argv[])
 int computefitnesspercent (DNA, originalimage)
 {
     //compute what % match DNA is to original image
+     boost::compute::function<int (int)> computefitnesspercent =
+    boost::compute::make_function_from_source<int (int)>(
+        "computefitnesspercent",
+        "int computefitnesspercent(int x) { //read leader dna
+
+    //compare input dna to leader dna to find changed polygons
+    compareDNA(leaderDNA,DNA);
+    //create bounding box containing changed polygons
+
+    //render leader dna within bounding box
+    leaderrender = renderDNA(leaderDNA,boundx,boundy);
+    //render input dna within bounding box
+    inputrender = renderDNA(DNA,boundx,boundy);
+    //compare leader and input dna rendered bounding boxes
+    compareimage(leaderrender,inputrender);
+    //returns % match }"
+    );
 }
 int computefitness (DNA0, DNA1)
 {
@@ -171,34 +193,11 @@ int compareDNA(DNA0,DNA1)
 int compareimage(image0,image1)
 {
     //compare two raster images, return 1 if image1 fitter than image0, else return 0
-    char *img1data, *img2data, fname[15];
-    int s, n = 0, y = 0;
-
-    sprintf(fname, "photo%d.bmp", p - 1);
-    cout << "\n" << fname;
-    ifstream img1(fname, ios::in|ios::binary|ios::ate);
-    sprintf(fname, "photo%d.bmp", p);
-    cout << "\n" << fname;
-    ifstream img2(fname, ios::in|ios::binary|ios::ate);
-
-    if (img1.is_open() && img2.is_open())
-    {
-        s = (int)img1.tellg();
-        img1data = new char [s];
-        img1.seekg (0, ios::beg);
-        img1.read (img1data, s);
-        img1.close();
-
-        img2data = new char [s];
-        img2.seekg (0, ios::beg);
-        img2.read (img2data, s);
-        img2.close();
-    }
-    
-    for(int i=0; i<s; i++)
-        if (img1data[i]==img2data[i]) y++;
-
-    return (y);
+    boost::compute::function<int (int)> compareDNA =
+    boost::compute::make_function_from_source<int (int)>(
+        "compareimage",
+        "int compareimage(int image0, int image1) { return x + 4; }"
+    );
 }
 
 int renderDNA (DNA, boundx0, boundy0, boundx1, boundy1)
@@ -224,13 +223,23 @@ int renderDNA (DNA, boundx0, boundy0, boundx1, boundy1)
 
 int renderSVG (DNA, boundx0, boundy0, boundx1, boundy1)
 {
-    //render input DNA to a vector image
+    //render input DNA to a vector image in an opengl texture
  boost::compute::function<int (int)> renderSVG =
     boost::compute::make_function_from_source<int (int)>(
         "renderSVG",
-        "int renderSVG(int x) { //for each shape in dna
+        "int renderSVG(int x) { 
+
+        //for each shape in dna
     {
-    
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, gl_texture_);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0); glVertex2f(0, 0);
+    glTexCoord2f(0, 1); glVertex2f(0, h);
+    glTexCoord2f(1, 1); glVertex2f(w, h);
+    glTexCoord2f(1, 0); glVertex2f(w, 0);
+    glEnd();
     } }"
     );
 }
@@ -375,16 +384,8 @@ int saverender(DNA)
 int importimage(image)
 {
     //import specified image into the gpu memory
-    // Load input image from file and load it into
-    // an OpenCL image object
-    int width, height;
-    imageObjects[0] = LoadImage(context, argv[1], width, height);
-    if (imageObjects[0] == 0)
-    {
-        std::cerr << "Error loading: " << std::string(argv[1]) << std::endl;
-        Cleanup(context, commandQueue, program, kernel, imageObjects, sampler);
-        return 1;
-    }
+    // create vector on the device
+    compute::vector<float> device_vector(1000000, ctx);
      //load image into gpu memory
     // copy data to the device
     compute::copy(
