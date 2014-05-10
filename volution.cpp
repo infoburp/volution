@@ -4,7 +4,20 @@
 #include <stdexcept>
 #include <vexcl/vexcl.hpp>
 
+#include <boost/compute.hpp>
+
+#include <algorithm>
+#include <QtGui>
+#include <QtOpenGL>
+#include <boost/compute/command_queue.hpp>
+#include <boost/compute/kernel.hpp>
+#include <boost/compute/program.hpp>
+#include <boost/compute/source.hpp>
+#include <boost/compute/system.hpp>
+#include <boost/compute/interop/opengl.hpp>
+
 using namespace std;
+namespace compute = boost::compute;
 
 int main (int argc, char* argv[])
 {
@@ -34,16 +47,37 @@ int main (int argc, char* argv[])
                
             }
     }
-    //use vexcl to initialise compute devices (gpu, cpu, apu)
-    vex::Context ctx( vex::Filter::Type(CL_DEVICE_TYPE_GPU) && vex::Filter::DoublePrecision );
+     // get the default compute device
+    compute::device gpu = compute::system::default_device();
 
-    if (!ctx) throw std::runtime_error("No devices available.");
+    // create a compute context and command queue
+    compute::context ctx(gpu);
+    compute::command_queue queue(ctx, gpu);
 
-    // Print out list of selected devices:
-    std::cout << ctx << std::endl;
-    //read specified input image file into the gpu memory
+    //create random leader dna
+    // generate random dna vector on the host
+    std::vector<float> host_vector(1000000);
+    std::generate(host_vector.begin(), host_vector.end(), rand);
 
-    importimage(argv[]);
+    // create vector on the device
+    compute::vector<float> device_vector(1000000, ctx);
+
+    //initialise variables
+    const size_t n = 1024 * 1024;
+    std::vector<double> leaderDNA(ctx, n);
+    std::vector<double> mutatedDNA(ctx, n);
+    std::vector<double> leaderDNArender(ctx, n);
+    std::vector<double> mutatedDNArender(ctx, n);
+    std::vector<double> originalimage(ctx, n);
+
+    //load image into gpu memory
+    // copy data to the device
+    compute::copy(
+        host_vector.begin(),
+        host_vector.end(),
+        device_vector.begin(),
+        queue
+    );
     
     //initialise variables
 	class DNA 

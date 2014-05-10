@@ -51,7 +51,6 @@ int main()
     
 
     //render dna
-
     //for each shape in dna
     {
     glEnable(GL_TEXTURE_2D);
@@ -64,32 +63,35 @@ int main()
     glTexCoord2f(1, 0); glVertex2f(w, 0);
     glEnd();
     }
+
     //render leader dna
-    compute::renderDNA(
-        device_vector.begin(),
-        device_vector.end(),
-        queue
+    boost::compute::function<int (int)> renderDNA =
+    boost::compute::make_function_from_source<int (int)>(
+        "renderDNA",
+        "int renderDNA(int x) { return x + 4; }"
     );
 
+    boost::compute::transform(vector.begin(), vector.end(), vector.begin(), renderDNA);
+
     //mutate leader dna
-    compute::mutateDNA(
-        device_vector.begin(),
-        device_vector.end(),
-        queue
+     boost::compute::function<int (int)> mutateDNA =
+    boost::compute::make_function_from_source<int (int)>(
+        "mutateDNA",
+        "int mutateDNA(int x) { return x + 4; }"
     );
 
     //render mutated dna
-    compute::renderDNA(
-        device_vector.begin(),
-        device_vector.end(),
-        queue
+     boost::compute::function<int (int)> renderDNA =
+    boost::compute::make_function_from_source<int (int)>(
+        "renderDNA",
+        "int renderDNA(int x) { return x + 4; }"
     );
 
     //compare mutated dna to leader dna
-    compute::compareDNA(
-        device_vector.begin(),
-        device_vector.end(),
-        queue
+     boost::compute::function<int (int)> compareDNA =
+    boost::compute::make_function_from_source<int (int)>(
+        "compareDNA",
+        "int compareDNA(int x) { return x + 4; }"
     );
 
     //if more fit, overwrite leader dna
