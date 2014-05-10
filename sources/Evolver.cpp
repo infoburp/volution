@@ -22,7 +22,7 @@ void Evolver::getAttributes(int ac, char **av)
   po::options_description	desc("Volution usage");
   po::variables_map		vm;
   
-  //setting option name and description of each options
+  //setting name and description of each options
   desc.add_options()
   ("help", "Produce this message")
   ("file", po::value<std::string>(), "Input file")
