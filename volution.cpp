@@ -32,7 +32,7 @@ int main (int argc, char* argv[])
         compute::vector<int> device_accuracy(1);
 
         // copy from host to device
-        compute::copy(host_data,
+        compute::copy(accuracy,
             accuracy,
             device_accuracy.begin());
         
@@ -150,17 +150,17 @@ int main (int argc, char* argv[])
     //initialise DNA with a random seed
         //create random leader dna
         // generate random dna vector on the host
-        std::vector<float> host_vector(1000000);
-        std::generate(host_vector.begin(), host_vector.end(), rand);
+        std::vector<float> leaderDNA(1000000);
+        std::generate(leaderDNA.begin(), leaderDNA.end(), rand);
 
         // create vector on the device
-        compute::vector<float> device_vector(1000000, ctx);
+        compute::vector<float> device_leaderDNA(1000000, ctx);
 
         // copy data to the device
         compute::copy(
-            host_vector.begin(),
-            host_vector.end(),
-            device_vector.begin(),
+            leaderDNA.begin(),
+            leaderDNA.end(),
+            device_leaderDNA.begin(),
             queue
         );
 
@@ -232,7 +232,7 @@ int main (int argc, char* argv[])
                                 //randomly select shape
                                     //move shape up stack
                                     //move shape down stack
-
+                        //100% mutation (create new random dna)
                 );
 
     //render mutated DNA to a raster image in opengl texture
