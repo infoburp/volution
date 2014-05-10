@@ -206,7 +206,7 @@ int main (int argc, char* argv[])
                         mutated_shape = RANDINT(NUM_SHAPES);
                         double roulette = RANDDOUBLE(3);
      
-                        // mutate color
+                        //mutate color
                             //randomly change mutated_shape colour
                                 //change red
                                     //up
@@ -220,14 +220,14 @@ int main (int argc, char* argv[])
                                 //change alpha
                                     //up
                                     //down
-                        // mutate shape
+                        //mutate shape
                             //randomly move one vertex in mutated_shape
                                 //randomly pick vertex
                                     //move up
                                     //move down
                                     //move left
                                     //move right
-                        // mutate stacking
+                        //mutate stacking
                             //randomly move one shape up or down stack 
                                 //randomly select shape
                                     //move shape up stack
@@ -259,38 +259,80 @@ int main (int argc, char* argv[])
     boost::compute::function<int (int)> computefitnesspercent =
     boost::compute::make_function_from_source<int (int)>(
         "computefitnesspercent",
-        "int computefitnesspercent(int x) { }"
+        "int computefitnesspercent(int x) {
+        //get x, y size of images to be compared
+
+        //for each x,y value
+            //give % match between leaderDNAimage(x,y) and mutatedDNAimage(x,y)
+
+        //calculate average % value
+         }"
     );
-                //check if it is fitter, if so overwrite leaderDNA
-                while (fitness(mutatedDNA,originalimage) < leaderfitness))
-                {
-                    //overwrite leaderDNA
-                    leaderDNA = mutatedDNA;
+    
+    //check if mutated dna image is fitter, if so overwrite leaderDNA
+    if (mutatedDNAfitness > leaderDNAfitness)
+        {
+            //overwrite leaderDNA
+            leaderDNA = mutatedDNA;
 
-                    //save dna to disk
-                    pFile = fopen ("volution.dna","w");
-                    fprintf (pFile, DNA);
-                    fclose (pFile);
-                }
+            //save dna to disk as filename.dna
+            pFile = fopen ("%filename.dna","w");
+            fprintf (pFile, DNA);
+            fclose (pFile);
         }
+    
     //perform final render, output svg and raster image
-        //render DNA and save resulting image to disk as .svg file and raster image (.png)
-
-        //render image from DNA
-        renderDNA(DNA);
-
-        //save resultant image to disk as svg and png files
-
-        //render input DNA to an svg file
-        boost::compute::function<int (int)> renderSVG =
+        //render final DNA to a raster image in opengl texture
+        boost::compute::function<int (int)> renderDNA =
         boost::compute::make_function_from_source<int (int)>(
-            "renderSVG",
-            "int renderSVG(int x) { 
-
+            "renderDNA",
+            "int renderDNA(int x)  
+            { 
                 //for each shape in dna
                 {
-                    //add shape to svg file
+                    glEnable(GL_TEXTURE_2D);
+                    glBindTexture(GL_TEXTURE_2D, gl_texture_);
+                    glBegin(GL_QUADS);
+                    glTexCoord2f(0, 0); glVertex2f(0, 0);
+                    glTexCoord2f(0, 1); glVertex2f(0, h);
+                    glTexCoord2f(1, 1); glVertex2f(w, h);
+                    glTexCoord2f(1, 0); glVertex2f(w, 0);
+                    glEnd();
                 }
             }"
         );
+    
+        //copy raster image from gpu to main memory
+
+        //save raster image to disk as filename.render.png
+        pFile = fopen ("%filename.render.png","w");
+                    fprintf (pFile, leaderDNAimage);
+                    fclose (pFile);
+
+        //render mutated DNA to a vector image 
+        boost::compute::function<int (int)> renderDNA =
+        boost::compute::make_function_from_source<int (int)>(
+            "renderDNAvector",
+            "int renderDNAvector(DNA)  
+            { 
+            //for each shape in dna
+                {
+                    glEnable(GL_TEXTURE_2D);
+                    glBindTexture(GL_TEXTURE_2D, gl_texture_);
+                    glBegin(GL_QUADS);
+                    glTexCoord2f(0, 0); glVertex2f(0, 0);
+                    glTexCoord2f(0, 1); glVertex2f(0, h);
+                    glTexCoord2f(1, 1); glVertex2f(w, h);
+                    glTexCoord2f(1, 0); glVertex2f(w, 0);
+                    glEnd();
+                }
+            }"
+        );
+    
+        //copy vector image from gpu to main memory
+
+        //save vector image to disk as filename.render.svg
+        pFile = fopen ("%filename.render.svg","w");
+                    fprintf (pFile, leaderDNAvector);
+                    fclose (pFile);
 }
