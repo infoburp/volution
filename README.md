@@ -30,3 +30,60 @@ This is a program that evolves a close match to an input image, made out of a se
 Some ideas from the thread:
 
 Make it run on GPU! Make it run on clusters over a network (boinc or similar) Solve the local maximum problem Tweak the DNA mutation More parameters!
+opencl evolved images, features that'd be nice:
+
+Features:
+-any features at all
+-screensaver mode
+-(gif to multiple evolved images)
+
+Algorithmstuff:
+-split bigger images in smaller (e.g. 100x100px) subimages and evolve them in forked processes/threads.
+(Is this the right way to do this? Why not try lots of times in parallel with random differences? This would avoid gaps between subimages)
+-refine color palette (but allow deviations with some kind of acceptance)
+
+Implementation:
+-C++
+-UI maybe in C# or with QT
+-platform agnostic would be nice
+
+
+int drawshape()
+{
+	//user draws shape from ui
+
+    //start drawing shape vertex by vertex
+    //until max number of vertices reached or user closes polygon by clicking on initial vertex
+
+    //check if drawn shape gives a better fitness
+
+    //if it does update the leaderDNA
+}
+
+int dragvertex()
+{
+	//user drags vertex from ui
+
+    //user stops dragging vertex
+
+    //check if dragged vertex improves fitness
+
+    //if it does update the leaderDNA
+}
+0) Setup a random DNA string  (application start)
+
+spawn a number of threads according to available resources
+
+for each thread {
+1) Copy the current DNA sequence and mutate it slightly
+2) Use the new DNA to render polygons onto a canvas
+3) Compare the canvas to the source image
+4) If the new painting looks more like the source image than the previous painting did, then overwrite the current DNA with the new DNA
+5) repeat from 1
+}
+
+functions:
+
+-compute fitness (DNA, original image)
+-render DNA to image
+-mutate DNA(DNA,mutation type)
