@@ -54,13 +54,7 @@ int main (int argc, char* argv[])
     compute::context ctx(gpu);
     compute::command_queue queue(ctx, gpu);
 
-    //create random leader dna
-    // generate random dna vector on the host
-    std::vector<float> host_vector(1000000);
-    std::generate(host_vector.begin(), host_vector.end(), rand);
-
-    // create vector on the device
-    compute::vector<float> device_vector(1000000, ctx);
+ 
 
     //initialise variables
     const size_t n = 1024 * 1024;
@@ -127,7 +121,11 @@ int computefitnesspercent (DNA, originalimage)
 int computefitness (DNA0, DNA1)
 {
 	//compute the fitness of input DNA, i.e. how close is it to original image?
-
+  boost::compute::function<int (int)> computefitness =
+    boost::compute::make_function_from_source<int (int)>(
+        "computefitness",
+        "int computefitness(int x) { return x + 4; }"
+    );
     //read leader dna
 
     //compare input dna to leader dna to find changed polygons
@@ -145,10 +143,32 @@ int computefitness (DNA0, DNA1)
 int seedDNA()
 {
     //create a random seed dna
+       //create random leader dna
+    // generate random dna vector on the host
+    std::vector<float> host_vector(1000000);
+    std::generate(host_vector.begin(), host_vector.end(), rand);
+
+    // create vector on the device
+    compute::vector<float> device_vector(1000000, ctx);
+
+    // copy data to the device
+    compute::copy(
+        host_vector.begin(),
+        host_vector.end(),
+        device_vector.begin(),
+        queue
+    );
+
+
 }
 int compareDNA(DNA0,DNA1)
 {
     //compare DNA0 to DNA1 to find changed polygons
+    boost::compute::function<int (int)> compareDNA =
+    boost::compute::make_function_from_source<int (int)>(
+        "compareDNA",
+        "int compareDNA(int x) { return x + 4; }"
+    );
 }
 int compareimage(image0,image1)
 {
@@ -186,7 +206,11 @@ int compareimage(image0,image1)
 int renderDNA (DNA, boundx0, boundy0, boundx1, boundy1)
 {
 	//render input DNA to a raster image and svg
-
+ boost::compute::function<int (int)> renderDNA =
+    boost::compute::make_function_from_source<int (int)>(
+        "renderDNA",
+        "int renderDNA(int x) { return x + 4; }"
+    );
     //render to raster image
 
     //read DNA from gpu memory
@@ -228,6 +252,12 @@ void draw_shape(shape_t * dna, cairo_t * cr, int i)
 
 int mutateDNA (DNA)
 {
+     //mutate dna
+    boost::compute::function<int (int)> mutateDNA =
+    boost::compute::make_function_from_source<int (int)>(
+        "mutateDNA",
+        "int mutateDNA(int x) { return x + 4; }"
+    );
 	//mutate input DNA randomly
 	    mutated_shape = RANDINT(NUM_SHAPES);
     double roulette = RANDDOUBLE(2.8);
