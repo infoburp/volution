@@ -1,11 +1,9 @@
 #include <iostream>
-#include <string>
-#include <vector>
-#include <stdexcept>
-#include <boost/compute.hpp>
 #include <algorithm>
+
 #include <QtGui>
 #include <QtOpenGL>
+
 #include <boost/compute/command_queue.hpp>
 #include <boost/compute/kernel.hpp>
 #include <boost/compute/program.hpp>
