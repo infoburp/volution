@@ -144,15 +144,165 @@ int main (int argc, char* argv[])
     //run render loop until desired accuracy is reached
     while (leaderaccuracy<accuracy) 
         {
+
+            //render leader DNA to a raster image in opengl texture
+            boost::compute::function<int (int)> renderDNA =
+            boost::compute::make_function_from_source<int (int)>(
+                "renderDNA",
+                "int renderDNA(int x)  
+                    { //for each shape in dna
+                        {
+                        glEnable(GL_TEXTURE_2D);
+                        glBindTexture(GL_TEXTURE_2D, gl_texture_);
+                        glBegin(GL_QUADS);
+                        glTexCoord2f(0, 0); glVertex2f(0, 0);
+                        glTexCoord2f(0, 1); glVertex2f(0, h);
+                        glTexCoord2f(1, 1); glVertex2f(w, h);
+                        glTexCoord2f(1, 0); glVertex2f(w, 0);
+                        glEnd();
+                        } }"
+            );
+
             //calculate leader fitness
             leaderfitness = computefitness(mutatedDNA,originalimage)
             while ()
                 {
                 //mutate from the leaderDNA
-                mutatedDNA = mutateDNA(leaderDNA)
-                //compute fitness of mutation vs leaderDNA
+                boost::compute::function<int (int)> mutateDNA =
+                boost::compute::make_function_from_source<int (int)>(
+                    "mutateDNA",
+                    "int mutateDNA(int DNA) 
+                        { 
+                        //mutate input DNA randomly
+                        mutated_shape = RANDINT(NUM_SHAPES);
+                        double roulette = RANDDOUBLE(2.8);
+                        double drastic = RANDDOUBLE(2);
+     
+                        // mutate color
+                        if(roulette<1)
+                        {
+                            if(dna_test[mutated_shape].a < 0.01 // completely transparent shapes are stupid
+                            || roulette<0.25)
+                        {
+                        if(drastic < 1)
+                        {
+                            dna_test[mutated_shape].a += RANDDOUBLE(0.1);
+                        dna_test[mutated_shape].a = CLAMP(dna_test[mutated_shape].a, 0.0, 1.0);
+                        }
+                        else
+                            dna_test[mutated_shape].a = RANDDOUBLE(1.0);
+                        }
+                        else if(roulette<0.50)
+                        {
+                        if(drastic < 1)
+                        {
+                        dna_test[mutated_shape].r += RANDDOUBLE(0.1);
+                        dna_test[mutated_shape].r = CLAMP(dna_test[mutated_shape].r, 0.0, 1.0);
+                        }
+                        else
+                        dna_test[mutated_shape].r = RANDDOUBLE(1.0);
+                        }
+                        else if(roulette<0.75)
+                        {
+                            if(drastic < 1)
+                                {
+                                    dna_test[mutated_shape].g += RANDDOUBLE(0.1);
+                                    dna_test[mutated_shape].g = CLAMP(dna_test[mutated_shape].g, 0.0, 1.0);
+                                }
+                            else
+                                    dna_test[mutated_shape].g = RANDDOUBLE(1.0);
+                        }
+                        else
+                        {
+                        if(drastic < 1)
+                        {
+                            dna_test[mutated_shape].b += RANDDOUBLE(0.1);
+                            dna_test[mutated_shape].b = CLAMP(dna_test[mutated_shape].b, 0.0, 1.0);
+                        }
+                        else
+                            dna_test[mutated_shape].b = RANDDOUBLE(1.0);
+                        }
+                        }
+    
+                        // mutate shape
+                        else if(roulette < 2.0)
+                        {
+                        int point_i = RANDINT(NUM_POINTS);
+                        if(roulette<1.5)
+                        {
+                        if(drastic < 1)
+                        {
+                            dna_test[mutated_shape].points[point_i].x += (int)RANDDOUBLE(WIDTH/10.0);
+                            dna_test[mutated_shape].points[point_i].x = CLAMP(dna_test[mutated_shape].points[point_i].x, 0, WIDTH-1);
+                        }
+                        else
+                            dna_test[mutated_shape].points[point_i].x = RANDDOUBLE(WIDTH);
+                        }
+                        else
+                        {
+                        if(drastic < 1)
+                        {
+                            dna_test[mutated_shape].points[point_i].y += (int)RANDDOUBLE(HEIGHT/10.0);
+                            dna_test[mutated_shape].points[point_i].y = CLAMP(dna_test[mutated_shape].points[point_i].y, 0, HEIGHT-1);
+                        }
+                        else
+                            dna_test[mutated_shape].points[point_i].y = RANDDOUBLE(HEIGHT);
+                        }
+                        }
+
+                        // mutate stacking
+                        else
+                        {
+                            int destination = RANDINT(NUM_SHAPES);
+                            shape_t s = dna_test[mutated_shape];
+                            dna_test[mutated_shape] = dna_test[destination];
+                            dna_test[destination] = s;
+                            return destination;
+                        }
+                        return -1;
+                        }"
+                );
+
+    //render mutated DNA to a raster image in opengl texture
+    boost::compute::function<int (int)> renderDNA =
+    boost::compute::make_function_from_source<int (int)>(
+        "renderDNA",
+        "int renderDNA(int x)  
+        { 
+        //for each shape in dna
+            {
+            glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D, gl_texture_);
+            glBegin(GL_QUADS);
+            glTexCoord2f(0, 0); glVertex2f(0, 0);
+            glTexCoord2f(0, 1); glVertex2f(0, h);
+            glTexCoord2f(1, 1); glVertex2f(w, h);
+            glTexCoord2f(1, 0); glVertex2f(w, 0);
+            glEnd();
+            } }"
+    );
+
+    //compute fitness of mutated dna image vs leader dna image
+    //compute what % match DNAimage is to original image
+    boost::compute::function<int (int)> computefitnesspercent =
+    boost::compute::make_function_from_source<int (int)>(
+        "computefitnesspercent",
+        "int computefitnesspercent(int x) { //read leader dna
+
+    //compare input dna to leader dna to find changed polygons
+    compareDNA(leaderDNA,DNA);
+    //create bounding box containing changed polygons
+
+    //render leader dna within bounding box
+    leaderrender = renderDNA(leaderDNA,boundx,boundy);
+    //render input dna within bounding box
+    inputrender = renderDNA(DNA,boundx,boundy);
+    //compare leader and input dna rendered bounding boxes
+    compareimage(leaderrender,inputrender);
+    //returns % match }"
+    );
                 //check if it is fitter, if so overwrite leaderDNA
-                if (computefitness(mutatedDNA,originalimage) < leaderfitness))
+                while (fitness(mutatedDNA,originalimage) < leaderfitness))
                 {
                     //overwrite leaderDNA
                     leaderDNA = mutatedDNA;
@@ -179,63 +329,8 @@ int main (int argc, char* argv[])
     //render image from DNA
     renderDNA(DNA);
     //save resultant image to disk as svg and png files
-}
-int computefitness (DNA, originalimage)
-{
-    //compute what % match DNAimage is to original image
-     boost::compute::function<int (int)> computefitnesspercent =
-    boost::compute::make_function_from_source<int (int)>(
-        "computefitnesspercent",
-        "int computefitnesspercent(int x) { //read leader dna
 
-    //compare input dna to leader dna to find changed polygons
-    compareDNA(leaderDNA,DNA);
-    //create bounding box containing changed polygons
-
-    //render leader dna within bounding box
-    leaderrender = renderDNA(leaderDNA,boundx,boundy);
-    //render input dna within bounding box
-    inputrender = renderDNA(DNA,boundx,boundy);
-    //compare leader and input dna rendered bounding boxes
-    compareimage(leaderrender,inputrender);
-    //returns % match }"
-    );
-}
-
-int compareDNA(DNA0,DNA1)
-{
-    //compare DNA0 to DNA1 to find changed polygons
-    boost::compute::function<int (int)> compareDNA =
-    boost::compute::make_function_from_source<int (int)>(
-        "compareDNA",
-        "int compareDNA(int x) { return x + 4; }"
-    );
-}
-
-int renderDNA (DNA, boundx0, boundy0, boundx1, boundy1)
-{
-	//render input DNA to a raster image
- boost::compute::function<int (int)> renderDNA =
-    boost::compute::make_function_from_source<int (int)>(
-        "renderDNA",
-        "int renderDNA(int x) { //for each shape in dna
-    {
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, gl_texture_);
-
-    glBegin(GL_QUADS);
-    glTexCoord2f(0, 0); glVertex2f(0, 0);
-    glTexCoord2f(0, 1); glVertex2f(0, h);
-    glTexCoord2f(1, 1); glVertex2f(w, h);
-    glTexCoord2f(1, 0); glVertex2f(w, 0);
-    glEnd();
-    } }"
-    );
-}
-
-int renderSVG (DNA, boundx0, boundy0, boundx1, boundy1)
-{
-    //render input DNA to a vector image in an opengl texture
+    //render input DNA to an svg file
  boost::compute::function<int (int)> renderSVG =
     boost::compute::make_function_from_source<int (int)>(
         "renderSVG",
@@ -247,109 +342,3 @@ int renderSVG (DNA, boundx0, boundy0, boundx1, boundy1)
     } }"
     );
 }
-
-}
-
-int mutateDNA (DNA)
-{
-     //mutate dna
-    boost::compute::function<int (int)> mutateDNA =
-    boost::compute::make_function_from_source<int (int)>(
-        "mutateDNA",
-        "int mutateDNA(int DNA) { //mutate input DNA randomly
-        mutated_shape = RANDINT(NUM_SHAPES);
-    double roulette = RANDDOUBLE(2.8);
-    double drastic = RANDDOUBLE(2);
-     
-    // mutate color
-    if(roulette<1)
-    {
-        if(dna_test[mutated_shape].a < 0.01 // completely transparent shapes are stupid
-                || roulette<0.25)
-        {
-            if(drastic < 1)
-            {
-                dna_test[mutated_shape].a += RANDDOUBLE(0.1);
-                dna_test[mutated_shape].a = CLAMP(dna_test[mutated_shape].a, 0.0, 1.0);
-            }
-            else
-                dna_test[mutated_shape].a = RANDDOUBLE(1.0);
-        }
-        else if(roulette<0.50)
-        {
-            if(drastic < 1)
-            {
-                dna_test[mutated_shape].r += RANDDOUBLE(0.1);
-                dna_test[mutated_shape].r = CLAMP(dna_test[mutated_shape].r, 0.0, 1.0);
-            }
-            else
-                dna_test[mutated_shape].r = RANDDOUBLE(1.0);
-        }
-        else if(roulette<0.75)
-        {
-            if(drastic < 1)
-            {
-                dna_test[mutated_shape].g += RANDDOUBLE(0.1);
-                dna_test[mutated_shape].g = CLAMP(dna_test[mutated_shape].g, 0.0, 1.0);
-            }
-            else
-                dna_test[mutated_shape].g = RANDDOUBLE(1.0);
-        }
-        else
-        {
-            if(drastic < 1)
-            {
-                dna_test[mutated_shape].b += RANDDOUBLE(0.1);
-                dna_test[mutated_shape].b = CLAMP(dna_test[mutated_shape].b, 0.0, 1.0);
-            }
-            else
-                dna_test[mutated_shape].b = RANDDOUBLE(1.0);
-        }
-    }
-    
-    // mutate shape
-    else if(roulette < 2.0)
-    {
-        int point_i = RANDINT(NUM_POINTS);
-        if(roulette<1.5)
-        {
-            if(drastic < 1)
-            {
-                dna_test[mutated_shape].points[point_i].x += (int)RANDDOUBLE(WIDTH/10.0);
-                dna_test[mutated_shape].points[point_i].x = CLAMP(dna_test[mutated_shape].points[point_i].x, 0, WIDTH-1);
-            }
-            else
-                dna_test[mutated_shape].points[point_i].x = RANDDOUBLE(WIDTH);
-        }
-        else
-        {
-            if(drastic < 1)
-            {
-                dna_test[mutated_shape].points[point_i].y += (int)RANDDOUBLE(HEIGHT/10.0);
-                dna_test[mutated_shape].points[point_i].y = CLAMP(dna_test[mutated_shape].points[point_i].y, 0, HEIGHT-1);
-            }
-            else
-                dna_test[mutated_shape].points[point_i].y = RANDDOUBLE(HEIGHT);
-        }
-    }
-
-    // mutate stacking
-    else
-    {
-        int destination = RANDINT(NUM_SHAPES);
-        shape_t s = dna_test[mutated_shape];
-        dna_test[mutated_shape] = dna_test[destination];
-        dna_test[destination] = s;
-        return destination;
-    }
-    return -1;
- }"
-    );
-	
-}
-
-
-
-
-
-
