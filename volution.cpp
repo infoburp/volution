@@ -66,16 +66,22 @@ int main (int argc, char* argv[])
     if (std::string(argv[i]) == "") 
             {
                 //load file according to commandline argument into gpu vector
+
+                //get x(max), y(max). (image dimensions)
+
+                //make image vector on device
                 compute::vector<float> originalimage(ctx, n);
+                // copy data to the device
+                compute::copy(
+                    host_vector.begin(),
+                    host_vector.end(),
+                    device_vector.begin(),
+                    queue
+                );
             }
-    // copy data to the device
-    compute::copy(
-        host_vector.begin(),
-        host_vector.end(),
-        device_vector.begin(),
-        queue
-    );
-    
+   
+    int importimage(image)
+
     //initialise variables
 	class DNA 
 	{
@@ -98,28 +104,62 @@ int main (int argc, char* argv[])
     }
 
     //initialise DNA with a random seed
-    leaderDNA = seedDNA();
+    //create random leader dna
+    // generate random dna vector on the host
+    std::vector<float> host_vector(1000000);
+    std::generate(host_vector.begin(), host_vector.end(), rand);
+
+    // create vector on the device
+    compute::vector<float> device_vector(1000000, ctx);
+
+    // copy data to the device
+    compute::copy(
+        host_vector.begin(),
+        host_vector.end(),
+        device_vector.begin(),
+        queue
+    );
+
+
+}
     //run render loop until desired accuracy is reached
     while (leaderaccuracy<accuracy) 
         {
-            //mutate from the leaderDNA
-            mutatedDNA = mutateDNA(leaderDNA)
-            //compute fitness of mutation vs leaderDNA
-            //check if it is fitter, if so overwrite leaderDNA
-            if (computefitness(leaderDNA,mutatedDNA) == 1)
-            {
-                //overwrite leaderDNA
-                leaderDNA = mutatedDNA;
-            }
-            //compute accuracy percent
-            computefitnesspercent(leaderDNA, originalimage)
+            //calculate leader fitness
+            leaderfitness = computefitness(mutatedDNA,originalimage)
+            while ()
+                {
+                //mutate from the leaderDNA
+                mutatedDNA = mutateDNA(leaderDNA)
+                //compute fitness of mutation vs leaderDNA
+                //check if it is fitter, if so overwrite leaderDNA
+                if (computefitness(mutatedDNA,originalimage) < leaderfitness))
+                {
+                    //overwrite leaderDNA
+                    leaderDNA = mutatedDNA;
+
+                    //save dna to disk
+                    // start by writing a temp file.
+                    pFile = fopen ("volution.dna.temp","w");
+                    fprintf (pFile, DNA);
+                    fclose (pFile);
+
+                    // Then rename the real backup to a secondary backup.
+                    result = rename("volution.dna","volution_2.dna");
+    
+                    // Then rename the temp file to the primary backup
+                    result = rename("volution.dna.temp","volution.dna");
+    
+                    // Then delete the temp file
+                    result = remove("volution.dna.temp");
+                }
         }
     //perform final render, output svg and raster image
     saverender(leaderDNA);
 }
-int computefitnesspercent (DNA, originalimage)
+int computefitness (DNA, originalimage)
 {
-    //compute what % match DNA is to original image
+    //compute what % match DNAimage is to original image
      boost::compute::function<int (int)> computefitnesspercent =
     boost::compute::make_function_from_source<int (int)>(
         "computefitnesspercent",
@@ -138,49 +178,7 @@ int computefitnesspercent (DNA, originalimage)
     //returns % match }"
     );
 }
-int computefitness (DNA0, DNA1)
-{
-	//compute the fitness of input DNA, i.e. how close is it to original image?
-  boost::compute::function<int (int)> computefitness =
-    boost::compute::make_function_from_source<int (int)>(
-        "computefitness",
-        "int computefitness(int x) { //read leader dna
 
-    //compare input dna to leader dna to find changed polygons
-    compareDNA(leaderDNA,DNA);
-    //create bounding box containing changed polygons
-
-    //render leader dna within bounding box
-    leaderrender = renderDNA(leaderDNA,boundx,boundy);
-    //render input dna within bounding box
-    inputrender = renderDNA(DNA,boundx,boundy);
-    //compare leader and input dna rendered bounding boxes
-    compareimage(leaderrender,inputrender);
-    //returns 1 if dna1 is fitter than dna0, else returns 0 }"
-    );
-    
-}
-int seedDNA()
-{
-    //create a random seed dna
-       //create random leader dna
-    // generate random dna vector on the host
-    std::vector<float> host_vector(1000000);
-    std::generate(host_vector.begin(), host_vector.end(), rand);
-
-    // create vector on the device
-    compute::vector<float> device_vector(1000000, ctx);
-
-    // copy data to the device
-    compute::copy(
-        host_vector.begin(),
-        host_vector.end(),
-        device_vector.begin(),
-        queue
-    );
-
-
-}
 int compareDNA(DNA0,DNA1)
 {
     //compare DNA0 to DNA1 to find changed polygons
@@ -231,15 +229,7 @@ int renderSVG (DNA, boundx0, boundy0, boundx1, boundy1)
 
         //for each shape in dna
     {
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, gl_texture_);
-
-    glBegin(GL_QUADS);
-    glTexCoord2f(0, 0); glVertex2f(0, 0);
-    glTexCoord2f(0, 1); glVertex2f(0, h);
-    glTexCoord2f(1, 1); glVertex2f(w, h);
-    glTexCoord2f(1, 0); glVertex2f(w, 0);
-    glEnd();
+        //add shape to svg file
     } }"
     );
 }
@@ -345,32 +335,6 @@ int mutateDNA (DNA)
 }
 
 
-int saveDNA(DNA)
-{
-	int result;
-
-	while(1)
-	{
-		// start by writing a temp file.
-
-		pFile = fopen ("volution.dna.temp","w");
-		fprintf (pFile, DNA);
-		fclose (pFile);
-
-		// Then rename the real backup to a secondary backup.
-    
-		result = rename("volution.dna","volution_2.dna");
-    
-		// Then rename the temp file to the primary backup
-
-		result = rename("volution.dna.temp","volution.dna");
-    
-		// Then delete the temp file
-    
-		result = remove("volution.dna.temp");
-
-	}
-}
 
 int saverender(DNA)
 {
@@ -381,20 +345,7 @@ int saverender(DNA)
     //save resultant image to disk as svg and png files
 }
 
-int importimage(image)
-{
-    //import specified image into the gpu memory
-    // create vector on the device
-    compute::vector<float> originalimage(1000000, ctx);
-     //load image into gpu memory
-    // copy data to the device
-    compute::copy(
-        host_vector.begin(),
-        host_vector.end(),
-        device_vector.begin(),
-        queue
-    );
-}
+
 
 int drawshape()
 {
