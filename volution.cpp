@@ -174,7 +174,11 @@ int main (int argc, char* argv[])
                 }
         }
     //perform final render, output svg and raster image
-    saverender(leaderDNA);
+        //render DNA and save resulting image to disk as .svg file and raster image (.png)
+
+    //render image from DNA
+    renderDNA(DNA);
+    //save resultant image to disk as svg and png files
 }
 int computefitness (DNA, originalimage)
 {
@@ -346,36 +350,6 @@ int mutateDNA (DNA)
 
 
 
-int saverender(DNA)
-{
-    //render DNA and save resulting image to disk as .svg file and raster image (.png)
-
-    //render image from DNA
-    renderDNA(DNA);
-    //save resultant image to disk as svg and png files
-}
 
 
 
-int drawshape()
-{
-	//user draws shape from ui
-
-    //start drawing shape vertex by vertex
-    //until max number of vertices reached or user closes polygon by clicking on initial vertex
-
-    //check if drawn shape gives a better fitness
-
-    //if it does update the leaderDNA
-}
-
-int dragvertex()
-{
-	//user drags vertex from ui
-
-    //user stops dragging vertex
-
-    //check if dragged vertex improves fitness
-
-    //if it does update the leaderDNA
-}
