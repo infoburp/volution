@@ -11,11 +11,11 @@ NAME	= 	volution
 
 INC	=	-I./includes
 
-FLAGS	=	-Wall -Wextra 
+FLAGS	=	-Wall -Wextra -std=gnu++11
 
-BOOST	=	 -lboost_program_options
+BOOST	=	 -lboost_program_options -lboost_system -lOpenCL
 
-CXXFLAGS+=	$(INC) $(FLAGS)
+CXXFLAGS+=	$(INC) $(FLAGS)  
 
 all	: 	$(NAME)
 

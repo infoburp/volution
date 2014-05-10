@@ -2,6 +2,7 @@
 #include <boost/exception/all.hpp>
 
 #include <exception>
+#include <vexcl/vexcl.hpp>
 
 #include "Evolver.hh"
 
