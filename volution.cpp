@@ -2,10 +2,7 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
-#include <vexcl/vexcl.hpp>
-
 #include <boost/compute.hpp>
-
 #include <algorithm>
 #include <QtGui>
 #include <QtOpenGL>
@@ -15,7 +12,6 @@
 #include <boost/compute/source.hpp>
 #include <boost/compute/system.hpp>
 #include <boost/compute/interop/opengl.hpp>
-
 using namespace std;
 namespace compute = boost::compute;
 
