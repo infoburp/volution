@@ -29,9 +29,44 @@ int main (int argc, char* argv[])
     compute::command_queue queue(ctx, gpu);
 
 	//set some default values for when no commandline arguments are given
-	int accuracy = 90;
-	int polygons = 50;
-	int vertices = 6;
+        //create accuracy variable
+        //int accuracy = 90;
+        // create data array on host
+        int host_data[] = { 1, 3, 5, 7, 9 };
+
+        // create vector on device
+        compute::vector<int> device_vector(5);
+
+        // copy from host to device
+        compute::copy(host_data,
+            host_data + 5,
+            device_vector.begin());
+        
+        //create polygons variable
+        //int polygons = 50;
+        // create data array on host
+        int host_data[] = { 1, 3, 5, 7, 9 };
+
+        // create vector on device
+        compute::vector<int> device_vector(5);
+
+        // copy from host to device
+        compute::copy(host_data,
+            host_data + 5,
+            device_vector.begin());
+        
+        //create vertices variable
+        //int vertices = 6;
+        // create data array on host
+        int host_data[] = { 1, 3, 5, 7, 9 };
+
+        // create vector on device
+        compute::vector<int> device_vector(5);
+
+        // copy from host to device
+        compute::copy(host_data,
+            host_data + 5,
+            device_vector.begin());
 
     //read input commandline arguments
     for (int i = 1; i < argc; ++i) 
@@ -56,8 +91,6 @@ int main (int argc, char* argv[])
             }
     }
 
-    //initialise variables in gpu
-    
     //create leaderDNA variable
         // create data array on host
         int host_data[] = { 1, 3, 5, 7, 9 };
@@ -125,21 +158,21 @@ int main (int argc, char* argv[])
             }
 
     //initialise DNA with a random seed
-    //create random leader dna
-    // generate random dna vector on the host
-    std::vector<float> host_vector(1000000);
-    std::generate(host_vector.begin(), host_vector.end(), rand);
+        //create random leader dna
+        // generate random dna vector on the host
+        std::vector<float> host_vector(1000000);
+        std::generate(host_vector.begin(), host_vector.end(), rand);
 
-    // create vector on the device
-    compute::vector<float> device_vector(1000000, ctx);
+        // create vector on the device
+        compute::vector<float> device_vector(1000000, ctx);
 
-    // copy data to the device
-    compute::copy(
-        host_vector.begin(),
-        host_vector.end(),
-        device_vector.begin(),
-        queue
-    );
+        // copy data to the device
+        compute::copy(
+            host_vector.begin(),
+            host_vector.end(),
+            device_vector.begin(),
+            queue
+        );
 
     //run render loop until desired accuracy is reached
     while (leaderaccuracy<accuracy) 
@@ -331,14 +364,15 @@ int main (int argc, char* argv[])
     //save resultant image to disk as svg and png files
 
     //render input DNA to an svg file
- boost::compute::function<int (int)> renderSVG =
+    boost::compute::function<int (int)> renderSVG =
     boost::compute::make_function_from_source<int (int)>(
         "renderSVG",
         "int renderSVG(int x) { 
 
-        //for each shape in dna
-    {
-        //add shape to svg file
-    } }"
+            //for each shape in dna
+            {
+            //add shape to svg file
+            }
+        }"
     );
 }
