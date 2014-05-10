@@ -54,9 +54,7 @@ int main (int argc, char* argv[])
     compute::context ctx(gpu);
     compute::command_queue queue(ctx, gpu);
 
- 
-
-    //initialise variables
+    //initialise variables in gpu
     const size_t n = 1024 * 1024;
     std::vector<double> leaderDNA(ctx, n);
     std::vector<double> mutatedDNA(ctx, n);
@@ -124,9 +122,7 @@ int computefitness (DNA0, DNA1)
   boost::compute::function<int (int)> computefitness =
     boost::compute::make_function_from_source<int (int)>(
         "computefitness",
-        "int computefitness(int x) { return x + 4; }"
-    );
-    //read leader dna
+        "int computefitness(int x) { //read leader dna
 
     //compare input dna to leader dna to find changed polygons
     compareDNA(leaderDNA,DNA);
@@ -138,7 +134,9 @@ int computefitness (DNA0, DNA1)
     inputrender = renderDNA(DNA,boundx,boundy);
     //compare leader and input dna rendered bounding boxes
     compareimage(leaderrender,inputrender);
-    //returns 1 if dna1 is fitter than dna0, else returns 0
+    //returns 1 if dna1 is fitter than dna0, else returns 0 }"
+    );
+    
 }
 int seedDNA()
 {
