@@ -205,47 +205,36 @@ int compareimage(image0,image1)
 
 int renderDNA (DNA, boundx0, boundy0, boundx1, boundy1)
 {
-	//render input DNA to a raster image and svg
+	//render input DNA to a raster image
  boost::compute::function<int (int)> renderDNA =
     boost::compute::make_function_from_source<int (int)>(
         "renderDNA",
-        "int renderDNA(int x) { return x + 4; }"
+        "int renderDNA(int x) { //for each shape in dna
+    {
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, gl_texture_);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0); glVertex2f(0, 0);
+    glTexCoord2f(0, 1); glVertex2f(0, h);
+    glTexCoord2f(1, 1); glVertex2f(w, h);
+    glTexCoord2f(1, 0); glVertex2f(w, 0);
+    glEnd();
+    } }"
     );
-    //render to raster image
-
-    //read DNA from gpu memory
-
-    //initialise a new opengl image and render the dna within bounding box into it
-    cairo_set_source_rgb(cr, 1, 1, 1);
-    cairo_rectangle(cr, 0, 0, WIDTH, HEIGHT);
-    cairo_fill(cr);
-    for(int i = 0; i < NUM_SHAPES; i++)
-        draw_shape(dna, cr, i);
-    //render to svg
 }
 
-void draw_shape(shape_t * dna, cairo_t * cr, int i)
+int renderSVG (DNA, boundx0, boundy0, boundx1, boundy1)
 {
-	// Set variables that define the boundary of the bounding box in 
-	// computefitness and renderDNA
-	int xmax = 0, xmin = 0, ymax = 0, ymin = 0;
-	
-	//render an individual shape within a DNA strand using opengl
-    cairo_set_line_width(cr, 0);
-    shape_t * shape = &dna[i];
-    cairo_set_source_rgba(cr, shape->r, shape->g, shape->b, shape->a);
-    cairo_move_to(cr, shape->points[0].x, shape->points[0].y);
-    for(int j = 1; j < NUM_POINTS; j++)
-		// Check the X and Y values of the boundary box & the polygon 
-		// Expand the bounding box edges if necessary
-		xmax = (shape->points[j].x > xmax) ? shape->points[j].x : xmax ;
-		xmin = (shape->points[j].x < xmin) ? shape->points[j].x : xmin ;
-		ymax = (shape->points[j].y > ymax) ? shape->points[j].y : ymax ;
-		ymin = (shape->points[j].y < ymin) ? shape->points[j].y : ymin ;
-		
-        cairo_line_to(cr, shape->points[j].x, shape->points[j].y);
-        
-    cairo_fill(cr);
+    //render input DNA to a vector image
+ boost::compute::function<int (int)> renderSVG =
+    boost::compute::make_function_from_source<int (int)>(
+        "renderSVG",
+        "int renderSVG(int x) { //for each shape in dna
+    {
+    
+    } }"
+    );
 }
 
 }
@@ -398,6 +387,14 @@ int importimage(image)
         Cleanup(context, commandQueue, program, kernel, imageObjects, sampler);
         return 1;
     }
+     //load image into gpu memory
+    // copy data to the device
+    compute::copy(
+        host_vector.begin(),
+        host_vector.end(),
+        device_vector.begin(),
+        queue
+    );
 }
 
 int drawshape()
