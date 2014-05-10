@@ -26,37 +26,37 @@ int main (int argc, char* argv[])
 
 	//set some default values for when no commandline arguments are given
         //create accuracy variable
-        int accuracy = 90;
+            int accuracy = 90;
 
-        // create vector on device
-        compute::vector<int> device_accuracy(1);
+            // create vector on device
+            compute::vector<int> device_accuracy(1);
 
-        // copy from host to device
-        compute::copy(accuracy,
-            accuracy,
-            device_accuracy.begin());
+            // copy from host to device
+            compute::copy(accuracy,
+                accuracy,
+                device_accuracy.begin());
         
         //create polygons variable
-        int polygons = 50;
+            int polygons = 50;
 
-        // create vector on device
-        compute::vector<int> device_polygons(1);
+            // create vector on device
+            compute::vector<int> device_polygons(1);
 
-        // copy from host to device
-        compute::copy(host_data,
-            host_data + 5,
-            device_vector.begin());
+            // copy from host to device
+            compute::copy(host_data,
+                host_data + 5,
+                device_vector.begin());
         
         //create vertices variable
-        int vertices = 6;
+            int vertices = 6;
 
-        // create vector on device
-        compute::vector<int> device_vertices(1);
+            // create vector on device
+            compute::vector<int> device_vertices(1);
 
-        // copy from host to device
-        compute::copy(host_data,
-            host_data + 5,
-            device_vector.begin());
+            // copy from host to device
+            compute::copy(host_data,
+                host_data + 5,
+                device_vector.begin());
 
     //read input commandline arguments
     for (int i = 1; i < argc; ++i) 
@@ -65,33 +65,48 @@ int main (int argc, char* argv[])
             {
                 //initialise desired accuracy variable according to commandline argument -a
                 accuracy = ;
+                // copy from host to device
+                compute::copy(accuracy,
+                    accuracy,
+                    device_accuracy.begin());
                 
             }
         if (std::string(argv[i]) == "-p") 
             {
                 //initialise maximum polygons variable according to commandline argument -p
                 polygons = ;
+                // copy from host to device
+                compute::copy(accuracy,
+                    accuracy,
+                    device_accuracy.begin());
                
             }
         if (std::string(argv[i]) == "-v") 
             {
                 //initialise maximum verices per polygon variable according to commandline argument -v
                 vertices = ;
-               
-            }
+                // copy from host to device
+                compute::copy(accuracy,
+                    accuracy,
+                    device_accuracy.begin());
+            }   
     }
 
     //create leaderDNA variable
-        // create data array on host
-        int host_data[] = { 1, 3, 5, 7, 9 };
+        // generate random dna vector on the host
+        std::vector<float> leaderDNA(1000000);
+        std::generate(leaderDNA.begin(), leaderDNA.end(), rand);
 
-        // create vector on device
-        compute::vector<int> device_vector(5);
+        // create vector on the device
+        compute::vector<float> device_leaderDNA(1000000, ctx);
 
-        // copy from host to device
-        compute::copy(host_data,
-            host_data + 5,
-            device_vector.begin());
+        // copy data to the device
+        compute::copy(
+            leaderDNA.begin(),
+            leaderDNA.end(),
+            device_leaderDNA.begin(),
+            queue
+        );
     
     //create mutatedDNA variable 
         // create data array on host
@@ -146,23 +161,6 @@ int main (int argc, char* argv[])
                     queue
                 );
             }
-
-    //initialise DNA with a random seed
-        //create random leader dna
-        // generate random dna vector on the host
-        std::vector<float> leaderDNA(1000000);
-        std::generate(leaderDNA.begin(), leaderDNA.end(), rand);
-
-        // create vector on the device
-        compute::vector<float> device_leaderDNA(1000000, ctx);
-
-        // copy data to the device
-        compute::copy(
-            leaderDNA.begin(),
-            leaderDNA.end(),
-            device_leaderDNA.begin(),
-            queue
-        );
 
     //run render loop until desired accuracy is reached
     while (leaderaccuracy<accuracy) 
