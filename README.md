@@ -1,6 +1,8 @@
 volution
 ========
 
+Need boost library to compile
+
 opencl image evolver
 
 Thread about what this is:
