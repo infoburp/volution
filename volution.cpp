@@ -196,8 +196,26 @@ int main (int argc, char* argv[])
                         } }"
             );
 
-            //calculate leader fitness
-            leaderfitness = computefitness(mutatedDNA,originalimage)
+
+            //compute fitness of leader dna image
+    //compute what % match DNAimage is to original image
+    boost::compute::function<int (int)> computefitnesspercent =
+    boost::compute::make_function_from_source<int (int)>(
+        "computefitnesspercent",
+        "int computefitnesspercent(int x) { //read leader dna
+
+    //compare input dna to leader dna to find changed polygons
+    compareDNA(leaderDNA,DNA);
+    //create bounding box containing changed polygons
+
+    //render leader dna within bounding box
+    leaderrender = renderDNA(leaderDNA,boundx,boundy);
+    //render input dna within bounding box
+    inputrender = renderDNA(DNA,boundx,boundy);
+    //compare leader and input dna rendered bounding boxes
+    compareimage(leaderrender,inputrender);
+    //returns % match }"
+    );
             while ()
                 {
                 //mutate from the leaderDNA
