@@ -21,10 +21,18 @@ namespace compute = boost::compute;
 
 int main (int argc, char* argv[])
 {
+    // get the default compute device
+    compute::device gpu = compute::system::default_device();
+
+    // create a compute context and command queue
+    compute::context ctx(gpu);
+    compute::command_queue queue(ctx, gpu);
+
 	//set some default values for when no commandline arguments are given
 	int accuracy = 90;
 	int polygons = 50;
 	int vertices = 6;
+
     //read input commandline arguments
     for (int i = 1; i < argc; ++i) 
     {
@@ -47,22 +55,58 @@ int main (int argc, char* argv[])
                
             }
     }
-     // get the default compute device
-    compute::device gpu = compute::system::default_device();
-
-    // create a compute context and command queue
-    compute::context ctx(gpu);
-    compute::command_queue queue(ctx, gpu);
 
     //initialise variables in gpu
-    const size_t n = 1024 * 1024;
-    compute::vector<float> leaderDNA(ctx, n);
-    compute::vector<float> mutatedDNA(ctx, n);
-    compute::vector<float> leaderDNArender(ctx, n);
-    compute::vector<float> mutatedDNArender(ctx, n);
-    compute::vector<float> originalimage(ctx, n);
+    
+    //create leaderDNA variable
+        // create data array on host
+        int host_data[] = { 1, 3, 5, 7, 9 };
 
-    //load image into gpu memory
+        // create vector on device
+        compute::vector<int> device_vector(5);
+
+        // copy from host to device
+        compute::copy(host_data,
+            host_data + 5,
+            device_vector.begin());
+    
+    //create mutatedDNA variable 
+        // create data array on host
+        int host_data[] = { 1, 3, 5, 7, 9 };
+
+        // create vector on device
+        compute::vector<int> device_vector(5);
+
+        // copy from host to device
+        compute::copy(host_data,
+            host_data + 5,
+            device_vector.begin());
+    
+    //create leaderDNArender variable 
+        // create data array on host
+        int host_data[] = { 1, 3, 5, 7, 9 };
+
+        // create vector on device
+        compute::vector<int> device_vector(5);
+
+        // copy from host to device
+        compute::copy(host_data,
+            host_data + 5,
+            device_vector.begin());
+
+    //create mutatedDNArender variable
+        // create data array on host
+        int host_data[] = { 1, 3, 5, 7, 9 };
+
+        // create vector on device
+        compute::vector<int> device_vector(5);
+
+        // copy from host to device
+        compute::copy(host_data,
+            host_data + 5,
+            device_vector.begin());
+
+    //create original image variable + load image into gpu memory
     if (std::string(argv[i]) == "") 
             {
                 //load file according to commandline argument into gpu vector
@@ -79,29 +123,6 @@ int main (int argc, char* argv[])
                     queue
                 );
             }
-   
-    int importimage(image)
-
-    //initialise variables
-	class DNA 
-	{
-		public:
-		string genome;
-        int polygons;
-        int vertices;
-        polygon[polygons];
-
-	}
-    class polygon;
-    {
-        public:
-        int x[vertices];
-        int y[vertices];
-        int R;
-        int G;
-        int B;
-        int alpha;
-    }
 
     //initialise DNA with a random seed
     //create random leader dna
@@ -120,8 +141,6 @@ int main (int argc, char* argv[])
         queue
     );
 
-
-}
     //run render loop until desired accuracy is reached
     while (leaderaccuracy<accuracy) 
         {
@@ -186,15 +205,6 @@ int compareDNA(DNA0,DNA1)
     boost::compute::make_function_from_source<int (int)>(
         "compareDNA",
         "int compareDNA(int x) { return x + 4; }"
-    );
-}
-int compareimage(image0,image1)
-{
-    //compare two raster images, return 1 if image1 fitter than image0, else return 0
-    boost::compute::function<int (int)> compareDNA =
-    boost::compute::make_function_from_source<int (int)>(
-        "compareimage",
-        "int compareimage(int image0, int image1) { return x + 4; }"
     );
 }
 
