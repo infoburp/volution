@@ -51,7 +51,7 @@ int main (int argc, char* argv[])
         int vertices = 6;
 
         // create vector on device
-        compute::vector<int> device_vector(5);
+        compute::vector<int> device_vertices(1);
 
         // copy from host to device
         compute::copy(host_data,
@@ -254,8 +254,7 @@ int main (int argc, char* argv[])
             } }"
     );
 
-    //compute fitness of mutated dna image vs leader dna image
-    //compute what % match DNAimage is to original image
+    //compute what % match mutated dna image is to original image
     boost::compute::function<int (int)> computefitnesspercent =
     boost::compute::make_function_from_source<int (int)>(
         "computefitnesspercent",
@@ -265,7 +264,8 @@ int main (int argc, char* argv[])
         //for each x,y value
             //give % match between leaderDNAimage(x,y) and mutatedDNAimage(x,y)
 
-        //calculate average % value
+        //calculate average % value and store to mutatedDNAfitness
+
          }"
     );
     
@@ -315,18 +315,13 @@ int main (int argc, char* argv[])
             "renderDNAvector",
             "int renderDNAvector(DNA)  
             { 
+            //initialise svg string
             //for each shape in dna
                 {
-                    glEnable(GL_TEXTURE_2D);
-                    glBindTexture(GL_TEXTURE_2D, gl_texture_);
-                    glBegin(GL_QUADS);
-                    glTexCoord2f(0, 0); glVertex2f(0, 0);
-                    glTexCoord2f(0, 1); glVertex2f(0, h);
-                    glTexCoord2f(1, 1); glVertex2f(w, h);
-                    glTexCoord2f(1, 0); glVertex2f(w, 0);
-                    glEnd();
+                    //add shape to svg
                 }
             }"
+            //close svg string
         );
     
         //copy vector image from gpu to main memory
