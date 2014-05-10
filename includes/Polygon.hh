@@ -8,11 +8,7 @@ public:
   ~Polygon();
 
 private:
-   int		_r;
-   int		_g;
-   int		_b;
-   int		_a;
-  
+   int		_rgba[4];
 };
 
 #endif // POLYGON_HH_
