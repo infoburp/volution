@@ -56,17 +56,17 @@ int main (int argc, char* argv[])
 
     //initialise variables in gpu
     const size_t n = 1024 * 1024;
-    std::vector<double> leaderDNA(ctx, n);
-    std::vector<double> mutatedDNA(ctx, n);
-    std::vector<double> leaderDNArender(ctx, n);
-    std::vector<double> mutatedDNArender(ctx, n);
-    std::vector<double> originalimage(ctx, n);
+    compute::vector<float> leaderDNA(ctx, n);
+    compute::vector<float> mutatedDNA(ctx, n);
+    compute::vector<float> leaderDNArender(ctx, n);
+    compute::vector<float> mutatedDNArender(ctx, n);
+    compute::vector<float> originalimage(ctx, n);
 
     //load image into gpu memory
     if (std::string(argv[i]) == "") 
             {
                 //load file according to commandline argument into gpu vector
-                std::vector<double> leaderDNA(ctx, n);
+                compute::vector<float> originalimage(ctx, n);
             }
     // copy data to the device
     compute::copy(
@@ -385,7 +385,7 @@ int importimage(image)
 {
     //import specified image into the gpu memory
     // create vector on the device
-    compute::vector<float> device_vector(1000000, ctx);
+    compute::vector<float> originalimage(1000000, ctx);
      //load image into gpu memory
     // copy data to the device
     compute::copy(
