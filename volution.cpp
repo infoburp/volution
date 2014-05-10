@@ -26,25 +26,21 @@ int main (int argc, char* argv[])
 
 	//set some default values for when no commandline arguments are given
         //create accuracy variable
-        //int accuracy = 90;
-        // create data array on host
-        int host_data[] = { 1, 3, 5, 7, 9 };
+        int accuracy = 90;
 
         // create vector on device
-        compute::vector<int> device_vector(5);
+        compute::vector<int> device_accuracy(1);
 
         // copy from host to device
         compute::copy(host_data,
-            host_data + 5,
-            device_vector.begin());
+            accuracy,
+            device_accuracy.begin());
         
         //create polygons variable
-        //int polygons = 50;
-        // create data array on host
-        int host_data[] = { 1, 3, 5, 7, 9 };
+        int polygons = 50;
 
         // create vector on device
-        compute::vector<int> device_vector(5);
+        compute::vector<int> device_polygons(1);
 
         // copy from host to device
         compute::copy(host_data,
@@ -52,9 +48,7 @@ int main (int argc, char* argv[])
             device_vector.begin());
         
         //create vertices variable
-        //int vertices = 6;
-        // create data array on host
-        int host_data[] = { 1, 3, 5, 7, 9 };
+        int vertices = 6;
 
         // create vector on device
         compute::vector<int> device_vector(5);
