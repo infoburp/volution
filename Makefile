@@ -13,14 +13,14 @@ INC	=	-I./includes
 
 FLAGS	=	-Wall -Wextra -std=gnu++11
 
-BOOST	=	 -lboost_program_options -lboost_system -lOpenCL
+BOOST	=	 -lboost_program_options -lboost_system
 
-CXXFLAGS+=	$(INC) $(FLAGS)  
+CXXFLAGS+=	$(INC) $(FLAGS) -DDEBUG  
 
 all	: 	$(NAME)
 
 $(NAME)	: 	$(OBJ)
-		g++ -o $(NAME) $(OBJ)  $(BOOST)
+		g++ -o $(NAME) $(OBJ)  $(BOOST) -lOpenCL
 
 clean	:
 		rm -rf $(OBJ)
