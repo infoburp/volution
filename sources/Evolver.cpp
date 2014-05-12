@@ -5,7 +5,6 @@
 #include <boost/program_options.hpp>
 #include <boost/exception/all.hpp>
 
-
 #include "Evolver.hh"
 
 namespace po = boost::program_options;

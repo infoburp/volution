@@ -4,7 +4,7 @@ volution
 To compile you need : 
 
 - openCL (either amd or nvidia)
-- boost
+- boost and boost::compute (https://github.com/kylelutz/compute)
 - vertx
 
 opencl image evolver
