@@ -1,0 +1,17 @@
+0) Setup a random DNA string  (application start)
+
+spawn a number of threads according to available resources
+
+for each thread {
+1) Copy the current DNA sequence and mutate it slightly
+2) Use the new DNA to render polygons onto a canvas
+3) Compare the canvas to the source image
+4) If the new painting looks more like the source image than the previous painting did, then overwrite the current DNA with the new DNA
+5) repeat from 1
+}
+
+functions:
+
+-compute fitness (DNA, original image)
+-render DNA to image
+-mutate DNA(DNA,mutation type)

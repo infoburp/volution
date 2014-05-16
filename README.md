@@ -1,6 +1,12 @@
 volution
 ========
 
+To compile you need : 
+
+- openCL (either amd or nvidia)
+- boost and boost::compute (https://github.com/kylelutz/compute)
+- vertx
+
 opencl image evolver
 
 volution inputfile outputfile -a 90 -p 50 -v 6
